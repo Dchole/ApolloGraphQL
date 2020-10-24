@@ -1,5 +1,5 @@
 type Query {
-  launches(pageSize: Int, after: Int): LaunchConnection!
+  launches(pageSize: Int, after: Int, isBooked: Boolean): LaunchConnection!
   launch(id: ID!): Launch!
   me: User!
 }

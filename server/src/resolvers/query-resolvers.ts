@@ -1,4 +1,3 @@
-import { ApolloError } from "apollo-server";
 import { QueryResolvers } from "../generated/graphql";
 import { paginateResults } from "../utils";
 import { TContext } from "./resolvers";
@@ -9,11 +8,21 @@ const Query: QueryResolvers<TContext> = {
   },
   launches: async (
     _,
-    { pageSize = 20, after },
-    { dataSources: { launchAPI } }
+    { pageSize = 20, after, isBooked },
+    { dataSources: { userAPI, launchAPI } }
   ) => {
-    const allLaunches = await launchAPI.getAllLaunches();
+    let allLaunches = await launchAPI.getAllLaunches();
+    const bookedLaunchesIds = await userAPI.getLaunchIdsByUser();
+
     allLaunches.reverse();
+
+    const filteredLaunches =
+      isBooked &&
+      allLaunches.filter(launch => bookedLaunchesIds.includes(launch.id));
+
+    if (filteredLaunches) {
+      allLaunches = filteredLaunches;
+    }
 
     const launches = paginateResults(
       Number(pageSize),

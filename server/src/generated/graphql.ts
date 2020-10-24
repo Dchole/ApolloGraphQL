@@ -30,6 +30,7 @@ export type Query = {
 export type QueryLaunchesArgs = {
   pageSize?: Maybe<Scalars['Int']>;
   after?: Maybe<Scalars['Int']>;
+  isBooked?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -207,11 +208,11 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Mutation: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
   LaunchConnection: ResolverTypeWrapper<LaunchConnection>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   TripUpdateResponse: ResolverTypeWrapper<TripUpdateResponse>;
   Launch: ResolverTypeWrapper<Launch>;
   Rocket: ResolverTypeWrapper<Rocket>;
@@ -225,11 +226,11 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Query: {};
   Int: Scalars['Int'];
+  Boolean: Scalars['Boolean'];
   ID: Scalars['ID'];
   Mutation: {};
   String: Scalars['String'];
   LaunchConnection: LaunchConnection;
-  Boolean: Scalars['Boolean'];
   TripUpdateResponse: TripUpdateResponse;
   Launch: Launch;
   Rocket: Rocket;

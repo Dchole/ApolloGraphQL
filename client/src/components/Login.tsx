@@ -1,7 +1,6 @@
 import React from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Button from "@material-ui/core/Button";
-import { RouteComponentProps } from "@reach/router";
 import { Field, Form, Formik } from "formik";
 import { TextField } from "formik-material-ui";
 import { loginValidationSchema, loginValues } from "../forms-lib";
@@ -9,7 +8,7 @@ import { useSignInMutation } from "../generated/graphql";
 import { setAccessToken } from "../token";
 import useFormStyles from "../styles/form-styles";
 
-interface ILoginProps extends RouteComponentProps {
+interface ILoginProps {
   handleSetAuth: () => void;
 }
 

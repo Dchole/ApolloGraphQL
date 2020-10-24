@@ -22,6 +22,7 @@ export type Query = {
 export type QueryLaunchesArgs = {
   pageSize?: Maybe<Scalars['Int']>;
   after?: Maybe<Scalars['Int']>;
+  isBooked?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -127,6 +128,19 @@ export type BookTripsMutation = (
   ) }
 );
 
+export type CancelTripMutationVariables = Exact<{
+  launchId: Scalars['ID'];
+}>;
+
+
+export type CancelTripMutation = (
+  { __typename?: 'Mutation' }
+  & { cancelTrip: (
+    { __typename?: 'TripUpdateResponse' }
+    & Pick<TripUpdateResponse, 'success' | 'message'>
+  ) }
+);
+
 export type GetLaunchDetailsQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -150,6 +164,7 @@ export type GetLaunchDetailsQuery = (
 export type GetLaunchesQueryVariables = Exact<{
   pageSize?: Maybe<Scalars['Int']>;
   after?: Maybe<Scalars['Int']>;
+  isBooked?: Maybe<Scalars['Boolean']>;
 }>;
 
 
@@ -245,6 +260,39 @@ export function useBookTripsMutation(baseOptions?: Apollo.MutationHookOptions<Bo
 export type BookTripsMutationHookResult = ReturnType<typeof useBookTripsMutation>;
 export type BookTripsMutationResult = Apollo.MutationResult<BookTripsMutation>;
 export type BookTripsMutationOptions = Apollo.BaseMutationOptions<BookTripsMutation, BookTripsMutationVariables>;
+export const CancelTripDocument = gql`
+    mutation CancelTrip($launchId: ID!) {
+  cancelTrip(launchId: $launchId) {
+    success
+    message
+  }
+}
+    `;
+export type CancelTripMutationFn = Apollo.MutationFunction<CancelTripMutation, CancelTripMutationVariables>;
+
+/**
+ * __useCancelTripMutation__
+ *
+ * To run a mutation, you first call `useCancelTripMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCancelTripMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [cancelTripMutation, { data, loading, error }] = useCancelTripMutation({
+ *   variables: {
+ *      launchId: // value for 'launchId'
+ *   },
+ * });
+ */
+export function useCancelTripMutation(baseOptions?: Apollo.MutationHookOptions<CancelTripMutation, CancelTripMutationVariables>) {
+        return Apollo.useMutation<CancelTripMutation, CancelTripMutationVariables>(CancelTripDocument, baseOptions);
+      }
+export type CancelTripMutationHookResult = ReturnType<typeof useCancelTripMutation>;
+export type CancelTripMutationResult = Apollo.MutationResult<CancelTripMutation>;
+export type CancelTripMutationOptions = Apollo.BaseMutationOptions<CancelTripMutation, CancelTripMutationVariables>;
 export const GetLaunchDetailsDocument = gql`
     query GetLaunchDetails($id: ID!) {
   launch(id: $id) {
@@ -288,8 +336,8 @@ export type GetLaunchDetailsQueryHookResult = ReturnType<typeof useGetLaunchDeta
 export type GetLaunchDetailsLazyQueryHookResult = ReturnType<typeof useGetLaunchDetailsLazyQuery>;
 export type GetLaunchDetailsQueryResult = Apollo.QueryResult<GetLaunchDetailsQuery, GetLaunchDetailsQueryVariables>;
 export const GetLaunchesDocument = gql`
-    query GetLaunches($pageSize: Int, $after: Int) {
-  launches(pageSize: $pageSize, after: $after) {
+    query GetLaunches($pageSize: Int, $after: Int, $isBooked: Boolean) {
+  launches(pageSize: $pageSize, after: $after, isBooked: $isBooked) {
     cursor
     hasMore
     launches {
@@ -313,6 +361,7 @@ export const GetLaunchesDocument = gql`
  *   variables: {
  *      pageSize: // value for 'pageSize'
  *      after: // value for 'after'
+ *      isBooked: // value for 'isBooked'
  *   },
  * });
  */

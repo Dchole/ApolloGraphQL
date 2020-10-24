@@ -1,4 +1,14 @@
-import { createMuiTheme } from "@material-ui/core";
+import { pink } from "@material-ui/core/colors";
+import { createMuiTheme } from "@material-ui/core/styles";
+
+declare module "@material-ui/core/styles/createPalette" {
+  interface Palette {
+    buttonSecondary: Palette["primary"];
+  }
+  interface PaletteOptions {
+    buttonSecondary: PaletteOptions["primary"];
+  }
+}
 
 const theme = createMuiTheme({
   palette: {
@@ -10,6 +20,11 @@ const theme = createMuiTheme({
     },
     background: {
       default: "#FBF2E7"
+    },
+    buttonSecondary: {
+      main: pink.A200,
+      light: pink[300],
+      dark: pink[600]
     }
   }
 });

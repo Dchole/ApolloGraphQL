@@ -1,8 +1,8 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import Typography from "@material-ui/core/Typography";
-import { Link } from "@reach/router";
 import useCardStyles from "../styles/card-styles";
 
 interface ILaunchProps {
@@ -24,7 +24,7 @@ const Launch: React.FC<ILaunchProps> = ({
     <Card variant="outlined" className={classes.root}>
       <CardActionArea
         component={Link}
-        to={`launches/${id}`}
+        to={`/launches/${id}`}
         className={classes.actionArea}
         role={undefined}
       >

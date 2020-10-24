@@ -23,8 +23,8 @@ const LaunchDetailsCheck: React.FC<ILaunchDetailsCheckProps> = ({
     return (
       <Box height={300} width="100%" className={classes.header}>
         <Skeleton variant="rect" animation="wave" height="100%" />
-        <Skeleton animation="wave" height={75} />
-        <Skeleton animation="wave" height={40} />
+        <Skeleton animation="wave" height={75} width="55%" />
+        <Skeleton animation="wave" height={40} width="40%" />
         <div className={classes.buttonWrapper}>
           <Button
             variant="contained"

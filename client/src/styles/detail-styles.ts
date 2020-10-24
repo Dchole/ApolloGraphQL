@@ -2,6 +2,11 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 
 const useDetailStyles = makeStyles((theme: Theme) =>
   createStyles({
+    img: {
+      marginBottom: theme.spacing(3),
+      width: "100%"
+    },
+
     header: {
       [theme.breakpoints.up("md")]: {
         display: "grid",
@@ -33,9 +38,10 @@ const useDetailStyles = makeStyles((theme: Theme) =>
       justifyContent: "flex-end",
       width: "100%"
     },
-    button: {
-      margin: theme.spacing(2, 0, "auto", "auto")
-    },
+    button: booked => ({
+      margin: theme.spacing(2, 0, "auto", "auto"),
+      backgroundColor: booked ? theme.palette.buttonSecondary.main : undefined
+    }),
     errorBtnWrapper: {
       justifyContent: "center",
 

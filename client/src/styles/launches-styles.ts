@@ -1,9 +1,4 @@
-import {
-  createStyles,
-  lighten,
-  makeStyles,
-  Theme
-} from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 
 const useLaunchesStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,11 +15,11 @@ const useLaunchesStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(1.2, 4),
       margin: theme.spacing(2, "auto"),
       fontSize: "large",
-      backgroundColor: "#FF5E87",
+      backgroundColor: theme.palette.buttonSecondary.main,
       color: "white",
 
       "&:hover": {
-        backgroundColor: lighten("#FF5E87", 0.2)
+        backgroundColor: theme.palette.buttonSecondary.light
       }
     },
     loadingBtn: {

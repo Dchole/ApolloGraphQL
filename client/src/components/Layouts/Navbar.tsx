@@ -7,7 +7,7 @@ import BookIcon from "@material-ui/icons/Book";
 import PersonIcon from "@material-ui/icons/Person";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import useNavbarStyles from "../../styles/navbar-styles";
-import { Link } from "@reach/router";
+import { Link } from "react-router-dom";
 
 interface IMenu {
   [key: string]: any;
@@ -25,16 +25,15 @@ const menu: IMenu = {
   profile: {
     label: "Profile",
     icon: <PersonIcon />
-  },
-  logout: {
-    label: "Logout",
-    icon: <ExitToAppIcon />
   }
 };
 
 const Navbar = () => {
   const classes = useNavbarStyles();
   const [value, setValue] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  const paths = ["/", "/booked", "/profile"];
 
   return (
     <Box
@@ -51,16 +50,17 @@ const Navbar = () => {
         showLabels
         className={classes.bottomNav}
       >
-        {Object.keys(menu).map(item => (
+        {Object.keys(menu).map((item, index) => (
           <BottomNavigationAction
             key={item}
             component={Link}
-            to={item}
+            to={index === 0 ? "/" : `/${item}`}
             label={menu[item].label}
             icon={menu[item].icon}
             role={undefined}
           />
         ))}
+        <BottomNavigationAction label="Logout" icon={<ExitToAppIcon />} />
       </BottomNavigation>
     </Box>
   );
