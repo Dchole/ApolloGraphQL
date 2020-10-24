@@ -1,0 +1,10 @@
+fragment LaunchQueryPart on Launch {
+  id
+  rocket {
+    name
+  }
+  mission {
+    name
+    missionPatch(size: SMALL)
+  }
+}

@@ -1,0 +1,11 @@
+# import ./launch-fragment.graphql
+
+query GetLaunches($pageSize: Int, $after: Int) {
+  launches(pageSize: $pageSize, after: $after) {
+    cursor
+    hasMore
+    launches {
+      ...LaunchQueryPart
+    }
+  }
+}
