@@ -15,7 +15,7 @@ const Layout: React.FC = ({ children }) => {
     <>
       <Header />
       {isAuthenticated ? (
-        children
+        <main>{children}</main>
       ) : (
         <FormWrapper handleSetAuth={handleSetAuth} />
       )}

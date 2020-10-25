@@ -1,0 +1,10 @@
+# import ./launch-fragment.graphql
+
+query GetUser {
+  me {
+    username
+    trips {
+      ...LaunchQueryPart
+    }
+  }
+}

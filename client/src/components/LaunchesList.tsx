@@ -11,9 +11,13 @@ import { GetLaunchesQuery, useGetLaunchesQuery } from "../generated/graphql";
 
 interface ILaunchesListProps {
   isBooked?: boolean;
+  onProfilePage?: boolean;
 }
 
-const LaunchesList: React.FC<ILaunchesListProps> = ({ isBooked }) => {
+const LaunchesList: React.FC<ILaunchesListProps> = ({
+  isBooked,
+  onProfilePage
+}) => {
   const classes = useLaunchesStyles();
   const [loadMore, setLoadMore] = useState(false);
   const { data, error, loading, fetchMore, refetch } = useGetLaunchesQuery({
@@ -58,7 +62,12 @@ const LaunchesList: React.FC<ILaunchesListProps> = ({ isBooked }) => {
   }, [loadMore, data, fetchMore, isBooked]);
 
   return (
-    <Container component="main" maxWidth="md" className={classes.root}>
+    <Container
+      component="section"
+      maxWidth="md"
+      disableGutters={onProfilePage}
+      className={onProfilePage ? undefined : classes.root}
+    >
       <ResponseCheck loading={loading} error={error} />
       {data?.launches.launches.map(launch => (
         <Launch
@@ -71,7 +80,6 @@ const LaunchesList: React.FC<ILaunchesListProps> = ({ isBooked }) => {
       ))}
       {data?.launches.hasMore && (
         <div className={classes.action}>
-          {console.log(data.launches.hasMore)}
           <Button
             variant="contained"
             disabled={loadMore}

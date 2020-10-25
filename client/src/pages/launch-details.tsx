@@ -65,7 +65,7 @@ const LaunchDetails = () => {
   };
 
   return (
-    <Container component="main" maxWidth="md">
+    <Container component="section" maxWidth="md">
       <Box component="section" mt={11}>
         <LaunchDetailsCheck loading={loading} error={error} />
         {data && (

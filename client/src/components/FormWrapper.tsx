@@ -18,7 +18,7 @@ const FormWrapper: React.FC<IFormWrapperProps> = ({ handleSetAuth }) => {
   const handleChangeFace = () => setLogin(!login);
 
   return (
-    <Container component="main" maxWidth="xs" className={classes.root}>
+    <Container component="section" maxWidth="xs" className={classes.root}>
       <Paper className={classes.paper}>
         <Typography component="h1" variant="h5" className={classes.title}>
           {login ? "Sign In" : "Sign Up"}
