@@ -2,14 +2,19 @@ import React from "react";
 import { ApolloError } from "@apollo/client";
 import Skeleton from "@material-ui/lab/Skeleton";
 import useCardStyles from "../styles/card-styles";
-import errorImage from "../assets/images/badge-3.png";
+import Error from "./Error";
 
 interface IResponseProps {
   loading: boolean;
   error: ApolloError | undefined;
+  refetch: VoidFunction;
 }
 
-const ResponseCheck: React.FC<IResponseProps> = ({ loading, error }) => {
+const ResponseCheck: React.FC<IResponseProps> = ({
+  loading,
+  error,
+  refetch
+}) => {
   const classes = useCardStyles();
 
   if (loading)
@@ -29,8 +34,7 @@ const ResponseCheck: React.FC<IResponseProps> = ({ loading, error }) => {
       </>
     );
 
-  if (error)
-    return <img src={errorImage} alt="Error" className={classes.errorImg} />;
+  if (error) return <Error loading={loading} refetch={refetch} />;
 
   return <></>;
 };

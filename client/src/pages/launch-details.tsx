@@ -24,7 +24,7 @@ const LaunchDetails = () => {
   const [message, setMessage] = useState("");
   const classes = useDetailStyles(booked);
 
-  const { data, loading, error } = useGetLaunchDetailsQuery({
+  const { data, loading, error, refetch } = useGetLaunchDetailsQuery({
     variables: { id }
   });
 
@@ -36,6 +36,8 @@ const LaunchDetails = () => {
   useEffect(() => {
     data && setBooked(data.launch.isBooked);
   }, [data]);
+
+  const handleReload = () => refetch({ id });
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -67,7 +69,11 @@ const LaunchDetails = () => {
   return (
     <Container component="section" maxWidth="md">
       <Box component="section" mt={11}>
-        <LaunchDetailsCheck loading={loading} error={error} />
+        <LaunchDetailsCheck
+          loading={loading}
+          error={error}
+          refetch={handleReload}
+        />
         {data && (
           <>
             <img

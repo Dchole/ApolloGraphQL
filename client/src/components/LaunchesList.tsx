@@ -68,7 +68,7 @@ const LaunchesList: React.FC<ILaunchesListProps> = ({
       disableGutters={onProfilePage}
       className={onProfilePage ? undefined : classes.root}
     >
-      <ResponseCheck loading={loading} error={error} />
+      <ResponseCheck loading={loading} error={error} refetch={handleReload} />
       {data?.launches.launches.map(launch => (
         <Launch
           key={launch.id}

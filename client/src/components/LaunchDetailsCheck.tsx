@@ -1,21 +1,22 @@
 import { ApolloError } from "@apollo/client";
-import clsx from "clsx";
 import React from "react";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import BookIcon from "@material-ui/icons/Book";
-import ReplayIcon from "@material-ui/icons/Replay";
 import Skeleton from "@material-ui/lab/Skeleton";
 import useDetailStyles from "../styles/detail-styles";
+import Error from "./Error";
 
 interface ILaunchDetailsCheckProps {
   loading: boolean;
   error: ApolloError | undefined;
+  refetch: VoidFunction;
 }
 
 const LaunchDetailsCheck: React.FC<ILaunchDetailsCheckProps> = ({
   loading,
-  error
+  error,
+  refetch
 }) => {
   const classes = useDetailStyles();
 
@@ -40,18 +41,7 @@ const LaunchDetailsCheck: React.FC<ILaunchDetailsCheckProps> = ({
   }
 
   if (error) {
-    return (
-      <div className={clsx(classes.buttonWrapper, classes.errorBtnWrapper)}>
-        <Button
-          variant="contained"
-          color="primary"
-          endIcon={<ReplayIcon />}
-          className={classes.button}
-        >
-          Retry
-        </Button>
-      </div>
-    );
+    return <Error loading={loading} refetch={refetch} />;
   }
 
   return <></>;

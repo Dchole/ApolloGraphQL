@@ -12,7 +12,7 @@ import useProfileStyles from "../styles/profile-styles";
 
 const Profile = () => {
   const classes = useProfileStyles();
-  const { data, loading, error } = useGetUserQuery();
+  const { data, loading, error, refetch } = useGetUserQuery();
 
   return (
     <Box mt={10}>
@@ -43,7 +43,7 @@ const Profile = () => {
           <Typography variant="h4" component="h2">
             Booked Trips
           </Typography>
-          <ResponseCheck loading={loading} error={error} />
+          <ResponseCheck loading={loading} error={error} refetch={refetch} />
           {data && <LaunchesList isBooked={true} onProfilePage={true} />}
         </Box>
       </Container>
