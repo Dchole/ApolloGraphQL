@@ -8,6 +8,7 @@ import PersonIcon from "@material-ui/icons/Person";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import useNavbarStyles from "../../styles/navbar-styles";
 import { Link } from "react-router-dom";
+import { clearAccessToken } from "../../token";
 
 interface IMenu {
   [key: string]: any;
@@ -28,12 +29,18 @@ const menu: IMenu = {
   }
 };
 
-const Navbar = () => {
+interface INavbarProps {
+  handleSetAuth: () => void;
+}
+
+const Navbar: React.FC<INavbarProps> = ({ handleSetAuth }) => {
   const classes = useNavbarStyles();
   const [value, setValue] = useState(0);
-  const [visible, setVisible] = useState(true);
 
-  const paths = ["/", "/booked", "/profile"];
+  const handleLogout = () => {
+    clearAccessToken();
+    handleSetAuth();
+  };
 
   return (
     <Box
@@ -60,7 +67,11 @@ const Navbar = () => {
             role={undefined}
           />
         ))}
-        <BottomNavigationAction label="Logout" icon={<ExitToAppIcon />} />
+        <BottomNavigationAction
+          label="Logout"
+          icon={<ExitToAppIcon />}
+          onClick={handleLogout}
+        />
       </BottomNavigation>
     </Box>
   );

@@ -32,44 +32,22 @@ const Mutation: MutationResolvers<TContext> = {
 
     return accessToken;
   },
-  bookTrips: async (
-    _,
-    { launchIds },
-    { dataSources: { userAPI, launchAPI } }
-  ) => {
-    const results = await userAPI.bookTrips(launchIds);
-    const launches = await launchAPI.getLaunchesByIds(launchIds);
+  bookTrip: async (_, { launchId }, { dataSources: { userAPI } }) => {
+    const result = await userAPI.bookTrip(launchId);
 
     return {
-      success: results.length === launchIds.length,
-      message:
-        results.length === launchIds.length
-          ? "Trips booked successfully"
-          : `The following launches couldn't be booked: ${launchIds.filter(
-              id => !results.includes(id)
-            )}`,
-      launches
+      success: Boolean(result),
+      message: Boolean(result)
+        ? "Trips booked successfully"
+        : "Failed to book trip"
     };
   },
-  cancelTrip: async (
-    _,
-    { launchId },
-    { dataSources: { userAPI, launchAPI } }
-  ) => {
+  cancelTrip: async (_, { launchId }, { dataSources: { userAPI } }) => {
     const result = await userAPI.cancelTrip(launchId);
 
-    if (!result) {
-      return {
-        success: false,
-        message: "Failed to cancel trip"
-      };
-    }
-
-    const launch = await launchAPI.getLaunchById(launchId);
     return {
-      success: true,
-      message: "Trip cancelled",
-      launches: [launch]
+      success: Boolean(result),
+      message: Boolean(result) ? "Trips cancelled" : "Failed to cancel trip"
     };
   }
 };

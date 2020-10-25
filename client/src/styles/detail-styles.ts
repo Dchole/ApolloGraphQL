@@ -38,10 +38,15 @@ const useDetailStyles = makeStyles((theme: Theme) =>
       justifyContent: "flex-end",
       width: "100%"
     },
-    button: booked => ({
-      margin: theme.spacing(2, 0, "auto", "auto"),
-      backgroundColor: booked ? theme.palette.buttonSecondary.main : undefined
-    }),
+    button: booked => {
+      console.log(booked);
+      return {
+        margin: theme.spacing(2, 0, "auto", "auto"),
+        backgroundColor: booked
+          ? theme.palette.buttonSecondary.main
+          : theme.palette.primary.main
+      };
+    },
     errorBtnWrapper: {
       justifyContent: "center",
 

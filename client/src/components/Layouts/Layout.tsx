@@ -19,7 +19,7 @@ const Layout: React.FC = ({ children }) => {
       ) : (
         <FormWrapper handleSetAuth={handleSetAuth} />
       )}
-      <Navbar />
+      <Navbar handleSetAuth={handleSetAuth} />
     </>
   );
 };

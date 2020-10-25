@@ -5,7 +5,7 @@ type Query {
 }
 
 type Mutation {
-  bookTrips(launchIds: [ID!]!): TripUpdateResponse!
+  bookTrip(launchId: ID!): TripUpdateResponse!
   cancelTrip(launchId: ID!): TripUpdateResponse!
   login(email: String!, password: String!): String!
   signUp(username: String!, email: String!, password: String!): String!

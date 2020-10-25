@@ -21,19 +21,12 @@ class UserAPI extends MongoDataSource<IUserSchema, IContext> {
     await this.model.create({ username, email, password });
   }
 
-  async bookTrips(launchIds: Maybe<string>[]) {
-    try {
-      const user = await this.getLoggedInUser();
+  async bookTrip(launchId: Maybe<string>) {
+    const user = await this.getLoggedInUser();
 
-      const bookedTrips = [...(user?.bookedTrips || []), ...launchIds];
+    const bookedTrips = [...(user?.bookedTrips || []), launchId];
 
-      await user?.updateOne({ bookedTrips });
-
-      return bookedTrips;
-    } catch (err) {
-      console.log({ err });
-      return [];
-    }
+    return user?.updateOne({ bookedTrips });
   }
 
   async cancelTrip(launchId: string) {

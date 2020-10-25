@@ -32,15 +32,15 @@ export type QueryLaunchArgs = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  bookTrips: TripUpdateResponse;
+  bookTrip: TripUpdateResponse;
   cancelTrip: TripUpdateResponse;
   login: Scalars['String'];
   signUp: Scalars['String'];
 };
 
 
-export type MutationBookTripsArgs = {
-  launchIds: Array<Scalars['ID']>;
+export type MutationBookTripArgs = {
+  launchId: Scalars['ID'];
 };
 
 
@@ -115,14 +115,14 @@ export enum PatchSize {
   Large = 'LARGE'
 }
 
-export type BookTripsMutationVariables = Exact<{
-  launchIds: Array<Scalars['ID']>;
+export type BookTripMutationVariables = Exact<{
+  launchId: Scalars['ID'];
 }>;
 
 
-export type BookTripsMutation = (
+export type BookTripMutation = (
   { __typename?: 'Mutation' }
-  & { bookTrips: (
+  & { bookTrip: (
     { __typename?: 'TripUpdateResponse' }
     & Pick<TripUpdateResponse, 'success' | 'message'>
   ) }
@@ -242,39 +242,39 @@ export const LaunchQueryPartFragmentDoc = gql`
   }
 }
     `;
-export const BookTripsDocument = gql`
-    mutation BookTrips($launchIds: [ID!]!) {
-  bookTrips(launchIds: $launchIds) {
+export const BookTripDocument = gql`
+    mutation BookTrip($launchId: ID!) {
+  bookTrip(launchId: $launchId) {
     success
     message
   }
 }
     `;
-export type BookTripsMutationFn = Apollo.MutationFunction<BookTripsMutation, BookTripsMutationVariables>;
+export type BookTripMutationFn = Apollo.MutationFunction<BookTripMutation, BookTripMutationVariables>;
 
 /**
- * __useBookTripsMutation__
+ * __useBookTripMutation__
  *
- * To run a mutation, you first call `useBookTripsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useBookTripsMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useBookTripMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useBookTripMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [bookTripsMutation, { data, loading, error }] = useBookTripsMutation({
+ * const [bookTripMutation, { data, loading, error }] = useBookTripMutation({
  *   variables: {
- *      launchIds: // value for 'launchIds'
+ *      launchId: // value for 'launchId'
  *   },
  * });
  */
-export function useBookTripsMutation(baseOptions?: Apollo.MutationHookOptions<BookTripsMutation, BookTripsMutationVariables>) {
-        return Apollo.useMutation<BookTripsMutation, BookTripsMutationVariables>(BookTripsDocument, baseOptions);
+export function useBookTripMutation(baseOptions?: Apollo.MutationHookOptions<BookTripMutation, BookTripMutationVariables>) {
+        return Apollo.useMutation<BookTripMutation, BookTripMutationVariables>(BookTripDocument, baseOptions);
       }
-export type BookTripsMutationHookResult = ReturnType<typeof useBookTripsMutation>;
-export type BookTripsMutationResult = Apollo.MutationResult<BookTripsMutation>;
-export type BookTripsMutationOptions = Apollo.BaseMutationOptions<BookTripsMutation, BookTripsMutationVariables>;
+export type BookTripMutationHookResult = ReturnType<typeof useBookTripMutation>;
+export type BookTripMutationResult = Apollo.MutationResult<BookTripMutation>;
+export type BookTripMutationOptions = Apollo.BaseMutationOptions<BookTripMutation, BookTripMutationVariables>;
 export const CancelTripDocument = gql`
     mutation CancelTrip($launchId: ID!) {
   cancelTrip(launchId: $launchId) {

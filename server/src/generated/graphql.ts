@@ -40,15 +40,15 @@ export type QueryLaunchArgs = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  bookTrips: TripUpdateResponse;
+  bookTrip: TripUpdateResponse;
   cancelTrip: TripUpdateResponse;
   login: Scalars['String'];
   signUp: Scalars['String'];
 };
 
 
-export type MutationBookTripsArgs = {
-  launchIds: Array<Scalars['ID']>;
+export type MutationBookTripArgs = {
+  launchId: Scalars['ID'];
 };
 
 
@@ -281,7 +281,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  bookTrips?: Resolver<ResolversTypes['TripUpdateResponse'], ParentType, ContextType, RequireFields<MutationBookTripsArgs, 'launchIds'>>;
+  bookTrip?: Resolver<ResolversTypes['TripUpdateResponse'], ParentType, ContextType, RequireFields<MutationBookTripArgs, 'launchId'>>;
   cancelTrip?: Resolver<ResolversTypes['TripUpdateResponse'], ParentType, ContextType, RequireFields<MutationCancelTripArgs, 'launchId'>>;
   login?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
   signUp?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationSignUpArgs, 'username' | 'email' | 'password'>>;

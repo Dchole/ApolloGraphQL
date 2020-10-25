@@ -7,7 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import BookIcon from "@material-ui/icons/Book";
 import {
-  useBookTripsMutation,
+  useBookTripMutation,
   useGetLaunchDetailsQuery,
   useCancelTripMutation
 } from "../generated/graphql";
@@ -28,7 +28,7 @@ const LaunchDetails = () => {
     variables: { id }
   });
 
-  const [bookTrips, { loading: bookLoading }] = useBookTripsMutation();
+  const [bookTrip, { loading: bookLoading }] = useBookTripMutation();
   const [cancelTrip, { loading: cancelLoading }] = useCancelTripMutation();
 
   const mutationLoading = bookLoading || cancelLoading;
@@ -40,12 +40,12 @@ const LaunchDetails = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleBookTrips = async () => {
+  const handleBookTrip = async () => {
     try {
-      const { data } = await bookTrips({ variables: { launchIds: [id!] } });
-      data && setBooked(data.bookTrips.success);
-      setCancelled(!data?.bookTrips.success);
-      setMessage(`${data?.bookTrips.message}`);
+      const { data } = await bookTrip({ variables: { launchId: id } });
+      data && setBooked(data.bookTrip.success);
+      setCancelled(!data?.bookTrip.success);
+      setMessage(`${data?.bookTrip.message}`);
       handleOpen();
     } catch (err) {
       console.log(err);
@@ -54,7 +54,7 @@ const LaunchDetails = () => {
 
   const handleCancelTrip = async () => {
     try {
-      const { data } = await cancelTrip({ variables: { launchId: id! } });
+      const { data } = await cancelTrip({ variables: { launchId: id } });
       data && setCancelled(data.cancelTrip.success);
       setBooked(!data?.cancelTrip.success);
       setMessage(`${data?.cancelTrip.message}`);
@@ -87,10 +87,9 @@ const LaunchDetails = () => {
             <div className={classes.buttonWrapper}>
               <Button
                 variant="contained"
-                color={booked ? undefined : "primary"}
                 endIcon={!booked ? <BookIcon /> : undefined}
                 className={classes.button}
-                onClick={booked ? handleCancelTrip : handleBookTrips}
+                onClick={booked ? handleCancelTrip : handleBookTrip}
                 disabled={mutationLoading}
                 disableElevation={mutationLoading}
               >
