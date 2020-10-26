@@ -84,20 +84,14 @@ const LaunchesList: React.FC<ILaunchesListProps> = ({
             variant="contained"
             disabled={loadMore}
             disableElevation={loadMore}
-            onClick={error ? handleReload : handleLoadMore}
+            onClick={handleLoadMore}
             className={
               loadMore
                 ? clsx(classes.button, classes.loadingBtn)
                 : classes.button
             }
           >
-            {loadMore ? (
-              <CircularProgress size={30} />
-            ) : error ? (
-              <ReplayIcon />
-            ) : (
-              "Load More"
-            )}
+            {loadMore ? <CircularProgress size={30} /> : "Load More"}
           </Button>
         </div>
       )}
