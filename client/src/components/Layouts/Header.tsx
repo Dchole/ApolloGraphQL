@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useRouteMatch } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Grid from "@material-ui/core/Grid";
@@ -10,22 +10,26 @@ import Menu from "@material-ui/core/Menu";
 import MenuList from "@material-ui/core/MenuList";
 import MenuItem from "@material-ui/core/MenuItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import BookIcon from "@material-ui/icons/Book";
 import PersonIcon from "@material-ui/icons/Person";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import logo from "../../assets/images/dog-3.png";
 import useHeaderStyles from "../../styles/header-styles";
 import useDesktopView from "../../hooks/useDesktopView";
+import { menu } from "./Navbar";
 
 interface IHeaderProps {
   logout: () => void;
 }
 
 const Header: React.FC<IHeaderProps> = ({ logout }) => {
+  const { goBack, location } = useHistory();
   const match = useRouteMatch("/booked") || false;
-  const classes = useHeaderStyles(match);
   const desktopView = useDesktopView();
+  const [show, setShow] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const classes = useHeaderStyles({ match, show });
 
   const handleClose = () => setAnchorEl(null);
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -37,9 +41,22 @@ const Header: React.FC<IHeaderProps> = ({ logout }) => {
     handleClose();
   };
 
+  useEffect(() => {
+    const paths = menu.map(item => item.path);
+    if (!paths.includes(location.pathname)) setShow(true);
+    else setShow(false);
+  }, [location.pathname]);
+
   return (
     <AppBar position="fixed" variant="outlined" className={classes.root}>
       <Toolbar className={classes.toolbar}>
+        <IconButton
+          aria-label="menu"
+          onClick={goBack}
+          className={classes.arrowBackBtn}
+        >
+          <ArrowBackIcon />
+        </IconButton>
         <Grid
           // @ts-ignore
           component={desktopView ? Link : undefined}

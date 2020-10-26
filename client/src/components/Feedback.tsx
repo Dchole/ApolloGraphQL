@@ -6,7 +6,7 @@ interface IFeedbackProps {
   severity: "success" | "error";
   message: string;
   open: boolean;
-  handleClose: () => void;
+  handleClose?: () => void;
 }
 
 const Feedback: React.FC<IFeedbackProps> = ({
@@ -20,7 +20,7 @@ const Feedback: React.FC<IFeedbackProps> = ({
       open={open}
       autoHideDuration={2500}
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      onClose={handleClose}
+      onClose={handleClose || undefined}
     >
       <Alert variant="filled" onClose={handleClose} severity={severity}>
         {message}

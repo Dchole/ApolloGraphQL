@@ -14,11 +14,13 @@ const useHeaderStyles = makeStyles((theme: Theme) =>
     toolbar: {
       padding: theme.spacing(0, 1)
     },
-    home: {
+    home: ({ show }: any) => ({
       textDecoration: "none",
-      color: "initial"
-    },
-    link: match => ({
+      color: "initial",
+      transition: "ease-out 200ms",
+      transform: `translateX(${show ? "0" : "-35"}px)`
+    }),
+    link: ({ match }: any) => ({
       color: match ? theme.palette.primary.dark : theme.palette.primary.main,
       marginRight: theme.spacing(2),
       textDecoration: "none",
@@ -34,6 +36,9 @@ const useHeaderStyles = makeStyles((theme: Theme) =>
     },
     button: {
       padding: theme.spacing(1)
+    },
+    arrowBackBtn: {
+      paddingLeft: 0
     },
     bookedIcon: {
       margin: "auto"

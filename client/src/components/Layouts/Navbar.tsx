@@ -11,7 +11,7 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import useNavbarStyles from "../../styles/navbar-styles";
 import useDesktopView from "../../hooks/useDesktopView";
 
-const menu = [
+export const menu = [
   {
     path: "/",
     label: "Home",
