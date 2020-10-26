@@ -1,79 +1,87 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import Box from "@material-ui/core/Box";
 import BottomNavigation from "@material-ui/core/BottomNavigation";
 import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
+import Slide from "@material-ui/core/Slide";
 import HomeIcon from "@material-ui/icons/Home";
 import BookIcon from "@material-ui/icons/Book";
 import PersonIcon from "@material-ui/icons/Person";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import useNavbarStyles from "../../styles/navbar-styles";
-import { Link } from "react-router-dom";
-import { clearAccessToken } from "../../token";
+import useDesktopView from "../../hooks/useDesktopView";
 
-interface IMenu {
-  [key: string]: any;
-}
-
-const menu: IMenu = {
-  home: {
+const menu = [
+  {
+    path: "/",
     label: "Home",
     icon: <HomeIcon />
   },
-  booked: {
+  {
+    path: "/booked",
     label: "Booked",
     icon: <BookIcon />
   },
-  profile: {
-    label: "Profile",
+  {
+    path: "/account",
+    label: "Account",
     icon: <PersonIcon />
   }
-};
+];
 
 interface INavbarProps {
-  handleSetAuth: () => void;
+  handleLogout: () => void;
 }
 
-const Navbar: React.FC<INavbarProps> = ({ handleSetAuth }) => {
+const Navbar: React.FC<INavbarProps> = ({ handleLogout }) => {
   const classes = useNavbarStyles();
+  const desktopView = useDesktopView();
+  const { pathname } = useLocation();
   const [value, setValue] = useState(0);
+  const [show, setShow] = useState(true);
 
-  const handleLogout = () => {
-    clearAccessToken();
-    handleSetAuth();
-  };
+  const paths = menu.map(item => item.path);
+
+  useEffect(() => {
+    if (!paths.includes(pathname) || desktopView) setShow(false);
+    else setShow(true);
+  }, [desktopView, pathname, paths]);
 
   return (
-    <Box
-      position="fixed"
-      bottom={0}
-      zIndex="modal"
-      boxShadow={6}
-      className={classes.root}
-      component="nav"
-    >
-      <BottomNavigation
-        value={value}
-        onChange={(_, newValue) => setValue(newValue)}
-        showLabels
-        className={classes.bottomNav}
+    <Slide direction="up" in={show}>
+      <Box
+        position="fixed"
+        bottom={0}
+        zIndex="modal"
+        className={classes.root}
+        component="nav"
+        borderTop={1.5}
+        borderColor="grey.300"
       >
-        {Object.keys(menu).map((item, index) => (
+        <BottomNavigation
+          value={value}
+          onChange={(_, newValue) => setValue(newValue)}
+          showLabels
+          className={classes.bottomNav}
+        >
+          {menu.map(item => (
+            <BottomNavigationAction
+              key={item.label}
+              component={Link}
+              to={item.path}
+              label={item.label}
+              icon={item.icon}
+              role={undefined}
+            />
+          ))}
           <BottomNavigationAction
-            key={item}
-            component={Link}
-            to={index === 0 ? "/" : `/${item}`}
-            label={menu[item].label}
-            icon={menu[item].icon}
-            role={undefined}
+            label="Logout"
+            icon={<ExitToAppIcon />}
+            onClick={handleLogout}
           />
-        ))}
-        <BottomNavigationAction
-          label="Logout"
-          icon={<ExitToAppIcon />}
-          onClick={handleLogout}
-        />
-      </BottomNavigation>
-    </Box>
+        </BottomNavigation>
+      </Box>
+    </Slide>
   );
 };
 

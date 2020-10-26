@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import Header from "./Header";
 import Navbar from "./Navbar";
-import { getAccessToken } from "../../token";
 import FormWrapper from "../FormWrapper";
+import { clearAccessToken, getAccessToken } from "../../token";
 
 const Layout: React.FC = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -11,15 +11,20 @@ const Layout: React.FC = ({ children }) => {
 
   const handleSetAuth = () => setIsAuthenticated(Boolean(getAccessToken()));
 
+  const handleLogout = () => {
+    clearAccessToken();
+    handleSetAuth();
+  };
+
   return (
     <>
-      <Header />
+      <Header logout={handleLogout} />
       {isAuthenticated ? (
         <main>{children}</main>
       ) : (
         <FormWrapper handleSetAuth={handleSetAuth} />
       )}
-      <Navbar handleSetAuth={handleSetAuth} />
+      <Navbar handleLogout={handleLogout} />
     </>
   );
 };

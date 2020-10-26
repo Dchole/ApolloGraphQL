@@ -15,7 +15,9 @@ const useNavbarStyles = makeStyles(
       padding: 0
     },
     bottomNav: {
-      width: "100%"
+      width: "100%",
+      backgroundColor: "#fffe",
+      backdropFilter: "blur(3px)"
     }
   })
 );

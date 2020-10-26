@@ -3,22 +3,23 @@ import React, { useEffect, useState } from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Container from "@material-ui/core/Container";
 import Button from "@material-ui/core/Button";
-import ReplayIcon from "@material-ui/icons/Replay";
 import Launch from "../components/Launch";
 import ResponseCheck from "./ResponseCheck";
 import useLaunchesStyles from "../styles/launches-styles";
 import { GetLaunchesQuery, useGetLaunchesQuery } from "../generated/graphql";
+import useDesktopView from "../hooks/useDesktopView";
 
 interface ILaunchesListProps {
   isBooked?: boolean;
-  onProfilePage?: boolean;
+  onAccountPage?: boolean;
 }
 
 const LaunchesList: React.FC<ILaunchesListProps> = ({
   isBooked,
-  onProfilePage
+  onAccountPage
 }) => {
-  const classes = useLaunchesStyles();
+  const desktopView = useDesktopView();
+  const classes = useLaunchesStyles(desktopView);
   const [loadMore, setLoadMore] = useState(false);
   const { data, error, loading, fetchMore, refetch } = useGetLaunchesQuery({
     variables: { pageSize: 5, after: null, isBooked }
@@ -65,8 +66,8 @@ const LaunchesList: React.FC<ILaunchesListProps> = ({
     <Container
       component="section"
       maxWidth="md"
-      disableGutters={onProfilePage}
-      className={onProfilePage ? undefined : classes.root}
+      disableGutters={onAccountPage}
+      className={onAccountPage ? undefined : classes.root}
     >
       <ResponseCheck loading={loading} error={error} refetch={handleReload} />
       {data?.launches.launches.map(launch => (

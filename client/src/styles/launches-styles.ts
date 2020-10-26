@@ -2,9 +2,11 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 
 const useLaunchesStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      margin: theme.spacing(10, "auto", 10)
-    },
+    root: desktopView => ({
+      margin: desktopView
+        ? theme.spacing(12, "auto", 4)
+        : theme.spacing(9, "auto", 8)
+    }),
     action: {
       width: "100%",
       display: "flex",

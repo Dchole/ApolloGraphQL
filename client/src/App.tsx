@@ -5,7 +5,7 @@ import Layout from "./components/Layouts/Layout";
 import LaunchesList from "./components/LaunchesList";
 import LaunchDetails from "./pages/launch-details";
 import BookedLaunches from "./pages/booked-launches";
-import Profile from "./pages/profile";
+import Account from "./pages/account";
 
 function App() {
   return (
@@ -16,7 +16,7 @@ function App() {
           <Route exact path="/" component={LaunchesList} />
           <Route exact path="/launches" component={LaunchesList} />
           <Route exact path="/booked" component={BookedLaunches} />
-          <Route path="/profile" component={Profile} />
+          <Route path="/account" component={Account} />
           <Route path="/launches/:id" component={LaunchDetails} />
         </Switch>
       </Layout>

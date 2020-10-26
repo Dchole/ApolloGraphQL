@@ -1,6 +1,6 @@
 import { createStyles, makeStyles, Theme } from "@material-ui/core";
 
-const useProfileStyles = makeStyles((theme: Theme) =>
+const useAccountStyles = makeStyles((theme: Theme) =>
   createStyles({
     avatar: {
       marginRight: theme.spacing(2),
@@ -12,4 +12,4 @@ const useProfileStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default useProfileStyles;
+export default useAccountStyles;

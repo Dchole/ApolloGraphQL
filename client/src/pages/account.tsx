@@ -8,10 +8,10 @@ import Skeleton from "@material-ui/lab/Skeleton";
 import ResponseCheck from "../components/ResponseCheck";
 import { useGetUserQuery } from "../generated/graphql";
 import LaunchesList from "../components/LaunchesList";
-import useProfileStyles from "../styles/profile-styles";
+import useAccountStyles from "../styles/account-styles";
 
-const Profile = () => {
-  const classes = useProfileStyles();
+const Account = () => {
+  const classes = useAccountStyles();
   const { data, loading, error, refetch } = useGetUserQuery();
 
   return (
@@ -44,11 +44,11 @@ const Profile = () => {
             Booked Trips
           </Typography>
           <ResponseCheck loading={loading} error={error} refetch={refetch} />
-          {data && <LaunchesList isBooked={true} onProfilePage={true} />}
+          {data && <LaunchesList isBooked={true} onAccountPage={true} />}
         </Box>
       </Container>
     </Box>
   );
 };
 
-export default Profile;
+export default Account;
