@@ -17,7 +17,8 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import logo from "../../assets/images/dog-3.png";
 import useHeaderStyles from "../../styles/header-styles";
 import useDesktopView from "../../hooks/useDesktopView";
-import { menu } from "./Navbar";
+import { paths } from "./Navbar";
+import { normalizePathname } from "../../utils";
 
 interface IHeaderProps {
   logout: () => void;
@@ -25,11 +26,11 @@ interface IHeaderProps {
 
 const Header: React.FC<IHeaderProps> = ({ logout }) => {
   const { goBack, location } = useHistory();
-  const match = useRouteMatch("/booked") || false;
-  const desktopView = useDesktopView();
   const [show, setShow] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const match = Boolean(useRouteMatch("/booked")?.isExact);
   const classes = useHeaderStyles({ match, show });
+  const desktopView = useDesktopView();
 
   const handleClose = () => setAnchorEl(null);
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -42,10 +43,11 @@ const Header: React.FC<IHeaderProps> = ({ logout }) => {
   };
 
   useEffect(() => {
-    const paths = menu.map(item => item.path);
-    if (!paths.includes(location.pathname)) setShow(true);
+    const currentPath = normalizePathname(location.pathname);
+
+    if (!paths.includes(currentPath) && !desktopView) setShow(true);
     else setShow(false);
-  }, [location.pathname]);
+  }, [location.pathname, desktopView]);
 
   return (
     <AppBar position="fixed" variant="outlined" className={classes.root}>

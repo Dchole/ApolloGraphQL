@@ -10,8 +10,9 @@ import PersonIcon from "@material-ui/icons/Person";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import useNavbarStyles from "../../styles/navbar-styles";
 import useDesktopView from "../../hooks/useDesktopView";
+import { normalizePathname } from "../../utils";
 
-export const menu = [
+const menu = [
   {
     path: "/",
     label: "Home",
@@ -29,6 +30,8 @@ export const menu = [
   }
 ];
 
+export const paths = menu.map(item => item.path);
+
 interface INavbarProps {
   handleLogout: () => void;
 }
@@ -39,13 +42,18 @@ const Navbar: React.FC<INavbarProps> = ({ handleLogout }) => {
   const { pathname } = useLocation();
   const [value, setValue] = useState(0);
   const [show, setShow] = useState(true);
-
-  const paths = menu.map(item => item.path);
+  const [currentPath, setCurrentPath] = useState(pathname);
 
   useEffect(() => {
-    if (!paths.includes(pathname) || desktopView) setShow(false);
+    setCurrentPath(normalizePathname(pathname));
+
+    if (!paths.includes(currentPath) || desktopView) setShow(false);
     else setShow(true);
-  }, [desktopView, pathname, paths]);
+  }, [desktopView, currentPath, pathname]);
+
+  useEffect(() => {
+    setValue(paths.indexOf(currentPath));
+  }, [currentPath]);
 
   return (
     <Slide direction="up" in={show}>

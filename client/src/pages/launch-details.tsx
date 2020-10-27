@@ -82,18 +82,18 @@ const LaunchDetails = () => {
               className={classes.img}
             />
             <Typography variant="h4" component="h1">
-              {data?.launch.mission.name}
+              {data.launch.mission.name}
             </Typography>
             <Typography variant="subtitle1">
               <span role="img" aria-label="rocket emoji">
                 🚀
               </span>{" "}
-              {data?.launch.rocket.name}({data?.launch.rocket.type})
+              {data.launch.rocket.name}({data.launch.rocket.type})
             </Typography>
             <div className={classes.buttonWrapper}>
               <Button
                 variant="contained"
-                endIcon={!booked ? <BookIcon /> : undefined}
+                endIcon={booked ? undefined : <BookIcon />}
                 className={classes.button}
                 onClick={booked ? handleCancelTrip : handleBookTrip}
                 disabled={mutationLoading}
