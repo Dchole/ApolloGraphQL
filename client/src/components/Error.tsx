@@ -15,7 +15,7 @@ const Error: React.FC<IErrorProps> = ({ loading, refetch }) => {
   const classes = useErrorStyles();
 
   return (
-    <Box component="section" display="grid" className={classes.root}>
+    <Box mt={20} component="section" display="grid" className={classes.root}>
       <Typography align="center" className={classes.message}>
         Oops! Something went wrong!
       </Typography>

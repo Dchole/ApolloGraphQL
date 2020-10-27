@@ -20,7 +20,7 @@ type LaunchConnection {
 type TripUpdateResponse {
   success: Boolean!
   message: String!
-  launches: [Launch!]
+  launch: Launch!
 }
 
 type Launch {

@@ -18,7 +18,7 @@ const Account = () => {
     <Box mt={10}>
       <Container component="section" maxWidth="md">
         {loading ? (
-          <Skeleton variant="rect" height={55} />
+          <Skeleton animation="wave" variant="rect" height={55} />
         ) : (
           <Grid
             container

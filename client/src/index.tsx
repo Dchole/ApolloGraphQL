@@ -16,11 +16,12 @@ import { getAccessToken } from "./token";
 import theme from "./theme";
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:4000/"
+  uri: "https://gql-server-api.herokuapp.com/"
 });
 
 const authLink = setContext((_, { headers }) => {
   const token = getAccessToken();
+
   return {
     headers: {
       ...headers,

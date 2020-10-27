@@ -1,5 +1,4 @@
 import { MongoDataSource } from "apollo-datasource-mongodb";
-import { Maybe } from "../generated/graphql";
 import { IUser, IUserSchema } from "../models/user-model";
 import { getCurrentUserId } from "../utils";
 
@@ -17,16 +16,16 @@ class UserAPI extends MongoDataSource<IUserSchema, IContext> {
     return await this.model.findOne({ email });
   }
 
-  async createUser({ username, email, password }: IUser) {
-    await this.model.create({ username, email, password });
+  async createUser(data: IUser) {
+    await this.model.create(data);
   }
 
-  async bookTrip(launchId: Maybe<string>) {
+  async bookTrip(launchId: string) {
     const user = await this.getLoggedInUser();
 
     const bookedTrips = [...(user?.bookedTrips || []), launchId];
-
-    return user?.updateOne({ bookedTrips });
+    await user?.updateOne({ bookedTrips });
+    return launchId;
   }
 
   async cancelTrip(launchId: string) {
@@ -35,7 +34,8 @@ class UserAPI extends MongoDataSource<IUserSchema, IContext> {
     const bookedTrips = [...(user?.bookedTrips || [])];
     const updatedBookedTrips = bookedTrips.filter(trip => trip !== launchId);
 
-    return await user?.updateOne({ bookedTrips: updatedBookedTrips });
+    await user?.updateOne({ bookedTrips: updatedBookedTrips });
+    return launchId;
   }
 
   async getLaunchIdsByUser() {

@@ -2,5 +2,9 @@ mutation BookTrip($launchId: ID!) {
   bookTrip(launchId: $launchId) {
     success
     message
+    launch {
+      id
+      isBooked
+    }
   }
 }

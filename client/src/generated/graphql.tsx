@@ -72,7 +72,7 @@ export type TripUpdateResponse = {
   __typename?: 'TripUpdateResponse';
   success: Scalars['Boolean'];
   message: Scalars['String'];
-  launches?: Maybe<Array<Launch>>;
+  launch: Launch;
 };
 
 export type Launch = {
@@ -125,6 +125,10 @@ export type BookTripMutation = (
   & { bookTrip: (
     { __typename?: 'TripUpdateResponse' }
     & Pick<TripUpdateResponse, 'success' | 'message'>
+    & { launch: (
+      { __typename?: 'Launch' }
+      & Pick<Launch, 'id' | 'isBooked'>
+    ) }
   ) }
 );
 
@@ -138,6 +142,10 @@ export type CancelTripMutation = (
   & { cancelTrip: (
     { __typename?: 'TripUpdateResponse' }
     & Pick<TripUpdateResponse, 'success' | 'message'>
+    & { launch: (
+      { __typename?: 'Launch' }
+      & Pick<Launch, 'id' | 'isBooked'>
+    ) }
   ) }
 );
 
@@ -247,6 +255,10 @@ export const BookTripDocument = gql`
   bookTrip(launchId: $launchId) {
     success
     message
+    launch {
+      id
+      isBooked
+    }
   }
 }
     `;
@@ -280,6 +292,10 @@ export const CancelTripDocument = gql`
   cancelTrip(launchId: $launchId) {
     success
     message
+    launch {
+      id
+      isBooked
+    }
   }
 }
     `;

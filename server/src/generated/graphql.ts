@@ -80,7 +80,7 @@ export type TripUpdateResponse = {
   __typename?: 'TripUpdateResponse';
   success: Scalars['Boolean'];
   message: Scalars['String'];
-  launches?: Maybe<Array<Launch>>;
+  launch: Launch;
 };
 
 export type Launch = {
@@ -297,7 +297,7 @@ export type LaunchConnectionResolvers<ContextType = any, ParentType extends Reso
 export type TripUpdateResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['TripUpdateResponse'] = ResolversParentTypes['TripUpdateResponse']> = {
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  launches?: Resolver<Maybe<Array<ResolversTypes['Launch']>>, ParentType, ContextType>;
+  launch?: Resolver<ResolversTypes['Launch'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

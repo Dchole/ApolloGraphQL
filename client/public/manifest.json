@@ -1,6 +1,7 @@
 {
   "short_name": "SpaceX",
   "name": "Space Explorer",
+  "description": "SpaceX space exploration application",
   "icons": [
     {
       "src": "dog-3.png",
@@ -26,6 +27,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#F7E5CE",
-  "background_color": "#FBF2E7"
+  "theme_color": "#44CDCB",
+  "background_color": "#0E8E89"
 }
