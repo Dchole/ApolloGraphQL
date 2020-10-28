@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Button from "@material-ui/core/Button";
 import { Field, Form, Formik } from "formik";
@@ -9,6 +9,7 @@ import { loginValidationSchema } from "../lib/validation-schemas";
 import { handleLoginSubmit } from "../lib/submit-functions";
 import useFormStyles from "../styles/form-styles";
 import Feedback from "./Feedback";
+import useInternalError from "../hooks/useInternalError";
 
 interface ILoginProps {
   handleSetAuth: () => void;
@@ -17,16 +18,7 @@ interface ILoginProps {
 const Login: React.FC<ILoginProps> = ({ handleSetAuth }) => {
   const classes = useFormStyles();
   const [login, { loading, error }] = useSignInMutation({ errorPolicy: "all" });
-  const [internalError, setInternalError] = useState(false);
-
-  const handleTriggerFeedback = () => setInternalError(true);
-  const handleCloseFeedback = () => setInternalError(false);
-
-  useEffect(() => {
-    if (error && error.graphQLErrors[0].extensions?.code !== "BAD_USER_INPUT") {
-      handleTriggerFeedback();
-    }
-  }, [error]);
+  const { internalError, handleClose } = useInternalError(error);
 
   return (
     <>
@@ -37,11 +29,11 @@ const Login: React.FC<ILoginProps> = ({ handleSetAuth }) => {
           handleLoginSubmit(values, actions, login, handleSetAuth)
         }
       >
-        {({ errors }) => (
+        {({ errors, touched }) => (
           <Form>
             <Field
-              error={Boolean(errors.email)}
-              helperText={errors.email}
+              error={Boolean(errors.email) && touched.email}
+              helperText={touched.email && errors.email}
               component={TextField}
               variant="outlined"
               margin="normal"
@@ -50,11 +42,12 @@ const Login: React.FC<ILoginProps> = ({ handleSetAuth }) => {
               type="email"
               label="Email"
               autoComplete="email"
+              autoFocus
               fullWidth
             />
             <Field
-              error={Boolean(errors.password)}
-              helperText={errors.password}
+              error={Boolean(errors.password) && touched.password}
+              helperText={touched.password && errors.password}
               component={TextField}
               variant="outlined"
               id="password"
@@ -81,9 +74,9 @@ const Login: React.FC<ILoginProps> = ({ handleSetAuth }) => {
       </Formik>
       <Feedback
         severity="error"
-        open={internalError}
-        message={"Something went wrong, Please try again!!!"}
-        handleClose={handleCloseFeedback}
+        open={Boolean(internalError)}
+        message={internalError}
+        handleClose={handleClose}
       />
     </>
   );

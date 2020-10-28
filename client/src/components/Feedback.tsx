@@ -18,9 +18,9 @@ const Feedback: React.FC<IFeedbackProps> = ({
   return (
     <Snackbar
       open={open}
+      onClose={handleClose}
       autoHideDuration={2500}
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      onClose={handleClose || undefined}
     >
       <Alert
         severity={severity}

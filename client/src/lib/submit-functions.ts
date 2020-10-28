@@ -1,13 +1,40 @@
 import { FormikHelpers } from "formik";
-import { SignInMutationFn } from "../generated/graphql";
+import { RegisterMutationFn, SignInMutationFn } from "../generated/graphql";
 import { setAccessToken } from "../token";
 import { TLogin, TRegister } from "./form-values";
 
-export const handleRegisterSubmit = (
+export const handleRegisterSubmit = async (
   values: TRegister,
-  actions: FormikHelpers<TRegister>
+  actions: FormikHelpers<TRegister>,
+  register: RegisterMutationFn
 ) => {
-  console.log({ values, actions });
+  try {
+    const { errors } = await register({ variables: values });
+
+    if (errors) {
+      const formikErrors: Partial<typeof values> = {};
+
+      errors.forEach(error => {
+        if (error.extensions?.code === "BAD_USER_INPUT") {
+          switch (error.extensions.invalidArgs) {
+            case "username":
+              formikErrors.username = error.message;
+              break;
+            case "email":
+              formikErrors.email = error.message;
+              break;
+            default:
+              formikErrors.password = error.message;
+              break;
+          }
+        }
+      });
+
+      actions.setErrors(formikErrors);
+    }
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const handleLoginSubmit = async (
@@ -16,7 +43,6 @@ export const handleLoginSubmit = async (
   login: SignInMutationFn,
   handleSetAuth: () => void
 ) => {
-  console.log({ values, actions });
   try {
     const { data, errors } = await login({ variables: values });
 
