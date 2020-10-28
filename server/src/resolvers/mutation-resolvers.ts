@@ -1,4 +1,4 @@
-import { ApolloError } from "apollo-server";
+import { UserInputError } from "apollo-server";
 import { compare, genSalt, hash } from "bcryptjs";
 import { MutationResolvers } from "../generated/graphql";
 import { createAccessToken } from "../token";
@@ -12,7 +12,9 @@ const Mutation: MutationResolvers<TContext> = {
   ) => {
     const user = await userAPI.getUser(email);
 
-    if (user) throw new ApolloError("User Already Exists");
+    if (user) {
+      throw new UserInputError("User Already Exists", { invalidArgs: "email" });
+    }
 
     const salt = await genSalt(10);
     const hashedPassword = await hash(password, salt);
@@ -23,10 +25,16 @@ const Mutation: MutationResolvers<TContext> = {
   },
   login: async (_, { email, password }, { dataSources: { userAPI } }) => {
     const user = await userAPI.getUser(email);
-    if (!user) throw new ApolloError("Email doesn't exist");
+    if (!user) {
+      throw new UserInputError("Email doesn't exist", { invalidArgs: "email" });
+    }
 
     const valid = await compare(password, user.password);
-    if (!valid) throw new ApolloError("Password Incorrect!");
+    if (!valid) {
+      throw new UserInputError("Password Incorrect!", {
+        invalidArgs: "password"
+      });
+    }
 
     const accessToken = createAccessToken({ userId: user._id });
 

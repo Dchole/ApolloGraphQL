@@ -1,4 +1,5 @@
 import { MongoDataSource } from "apollo-datasource-mongodb";
+import { AuthenticationError } from "apollo-server";
 import { IUser, IUserSchema } from "../models/user-model";
 import { getCurrentUserId } from "../utils";
 
@@ -8,6 +9,8 @@ interface IContext {
 
 class UserAPI extends MongoDataSource<IUserSchema, IContext> {
   async getLoggedInUser() {
+    if (!this.context.token) throw new AuthenticationError("Unauthenticated");
+
     const userId = getCurrentUserId(this.context.token);
     return await this.findOneById(userId);
   }

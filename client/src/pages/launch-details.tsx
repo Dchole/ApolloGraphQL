@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Box from "@material-ui/core/Box";
+import Grid from "@material-ui/core/Grid";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
@@ -11,10 +12,12 @@ import {
   useGetLaunchDetailsQuery,
   useCancelTripMutation
 } from "../generated/graphql";
-import LaunchDetailsCheck from "../components/LaunchDetailsCheck";
 import useDetailStyles from "../styles/detail-styles";
 import Feedback from "../components/Feedback";
 import replacementImg from "../assets/images/badge-2.png";
+import useDesktopView from "../hooks/useDesktopView";
+import Skeleton from "@material-ui/lab/Skeleton";
+import Error from "../components/Error";
 
 const LaunchDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -23,6 +26,7 @@ const LaunchDetails = () => {
   const [cancelled, setCancelled] = useState(false);
   const [message, setMessage] = useState("");
   const classes = useDetailStyles(booked);
+  const desktopView = useDesktopView();
 
   const { data, loading, error, refetch } = useGetLaunchDetailsQuery({
     variables: { id }
@@ -66,50 +70,93 @@ const LaunchDetails = () => {
     }
   };
 
+  if (error) {
+    return <Error loading={loading} refetch={handleReload} />;
+  }
+
   return (
     <Container component="section" maxWidth="md">
       <Box component="section" mt={11}>
-        <LaunchDetailsCheck
-          loading={loading}
-          error={error}
-          refetch={handleReload}
-        />
-        {data && (
-          <>
-            <img
-              src={data.launch.mission.missionPatch || replacementImg}
-              alt={data.launch.mission.name}
-              className={classes.img}
-            />
-            <Typography variant="h4" component="h1">
-              {data.launch.mission.name}
-            </Typography>
-            <Typography variant="subtitle1">
-              <span role="img" aria-label="rocket emoji">
-                🚀
-              </span>{" "}
-              {data.launch.rocket.name}({data.launch.rocket.type})
-            </Typography>
-            <div className={classes.buttonWrapper}>
+        <Grid container>
+          <Grid item xs={12} md={7}>
+            {data ? (
+              <img
+                src={data.launch.mission.missionPatch || replacementImg}
+                alt={data.launch.mission.name}
+                className={classes.img}
+              />
+            ) : (
+              <Skeleton
+                variant="rect"
+                height={desktopView ? 420 : 200}
+                width={desktopView ? 420 : "100%"}
+              />
+            )}
+          </Grid>
+          <Grid
+            direction="column"
+            alignItems="stretch"
+            justify="space-evenly"
+            xs={12}
+            md={4}
+            item
+            container
+          >
+            <div>
+              <Typography
+                component="h1"
+                variant="h4"
+                align={desktopView ? "right" : "left"}
+              >
+                {data ? data.launch.mission.name : <Skeleton />}
+              </Typography>
+              <Typography
+                variant="subtitle1"
+                align={desktopView ? "right" : "left"}
+              >
+                {data ? (
+                  <>
+                    <span role="img" aria-label="rocket emoji">
+                      🚀
+                    </span>{" "}
+                    {data.launch.rocket.name}({data.launch.rocket.type})
+                  </>
+                ) : (
+                  <Skeleton />
+                )}
+              </Typography>
+            </div>
+            {data ? (
+              <div className={classes.buttonWrapper}>
+                <Button
+                  variant="contained"
+                  endIcon={booked ? undefined : <BookIcon />}
+                  className={classes.button}
+                  onClick={booked ? handleCancelTrip : handleBookTrip}
+                  disabled={mutationLoading}
+                  disableElevation={mutationLoading}
+                >
+                  {mutationLoading ? (
+                    <CircularProgress size={25} />
+                  ) : booked ? (
+                    "Cancel Trip"
+                  ) : (
+                    "Book Trip"
+                  )}
+                </Button>
+              </div>
+            ) : (
               <Button
                 variant="contained"
-                endIcon={booked ? undefined : <BookIcon />}
+                color="primary"
+                endIcon={<BookIcon />}
                 className={classes.button}
-                onClick={booked ? handleCancelTrip : handleBookTrip}
-                disabled={mutationLoading}
-                disableElevation={mutationLoading}
               >
-                {mutationLoading ? (
-                  <CircularProgress size={25} />
-                ) : booked ? (
-                  "Cancel Trip"
-                ) : (
-                  "Book Trip"
-                )}
+                Book Trip
               </Button>
-            </div>
-          </>
-        )}
+            )}
+          </Grid>
+        </Grid>
       </Box>
       <Feedback
         severity={booked || cancelled ? "success" : "error"}
