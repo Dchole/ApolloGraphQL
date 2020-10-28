@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Button from "@material-ui/core/Button";
 import { Field, Form, Formik } from "formik";
 import { TextField } from "formik-material-ui";
-import { loginValidationSchema, loginValues } from "../forms-lib";
 import { useSignInMutation } from "../generated/graphql";
-import { setAccessToken } from "../token";
+import { loginValues } from "../lib/form-values";
+import { loginValidationSchema } from "../lib/validation-schemas";
+import { handleLoginSubmit } from "../lib/submit-functions";
 import useFormStyles from "../styles/form-styles";
 import Feedback from "./Feedback";
 
@@ -15,65 +16,74 @@ interface ILoginProps {
 
 const Login: React.FC<ILoginProps> = ({ handleSetAuth }) => {
   const classes = useFormStyles();
-  const [login, { loading, error }] = useSignInMutation();
+  const [login, { loading, error }] = useSignInMutation({ errorPolicy: "all" });
+  const [internalError, setInternalError] = useState(false);
 
-  const handleSubmit = async (values: typeof loginValues) => {
-    try {
-      const { data } = await login({ variables: values });
-      data && setAccessToken(data.login);
-      handleSetAuth();
-    } catch (err) {
-      console.error(err);
+  const handleTriggerFeedback = () => setInternalError(true);
+  const handleCloseFeedback = () => setInternalError(false);
+
+  useEffect(() => {
+    if (error && error.graphQLErrors[0].extensions?.code !== "BAD_USER_INPUT") {
+      handleTriggerFeedback();
     }
-  };
+  }, [error]);
 
   return (
     <>
       <Formik
         initialValues={loginValues}
         validationSchema={loginValidationSchema}
-        onSubmit={handleSubmit}
+        onSubmit={(values, actions) =>
+          handleLoginSubmit(values, actions, login, handleSetAuth)
+        }
       >
-        <Form>
-          <Field
-            component={TextField}
-            variant="outlined"
-            margin="normal"
-            id="email"
-            name="email"
-            type="email"
-            label="Email"
-            autoComplete="email"
-            fullWidth
-          />
-          <Field
-            component={TextField}
-            variant="outlined"
-            id="password"
-            name="password"
-            type="password"
-            label="Password"
-            autoComplete="current-password"
-            fullWidth
-            className={classes.field}
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            className={classes.button}
-            disabled={loading}
-            disableElevation={loading}
-          >
-            {loading ? <CircularProgress size={25} /> : "Sign in"}
-          </Button>
-        </Form>
+        {({ errors }) => (
+          <Form>
+            <Field
+              error={Boolean(errors.email)}
+              helperText={errors.email}
+              component={TextField}
+              variant="outlined"
+              margin="normal"
+              id="email"
+              name="email"
+              type="email"
+              label="Email"
+              autoComplete="email"
+              fullWidth
+            />
+            <Field
+              error={Boolean(errors.password)}
+              helperText={errors.password}
+              component={TextField}
+              variant="outlined"
+              id="password"
+              name="password"
+              type="password"
+              label="Password"
+              autoComplete="current-password"
+              className={classes.field}
+              fullWidth
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              disabled={loading}
+              disableElevation={loading}
+              fullWidth
+            >
+              {loading ? <CircularProgress size={25} /> : "Sign in"}
+            </Button>
+          </Form>
+        )}
       </Formik>
       <Feedback
         severity="error"
-        open={Boolean(error)}
-        message={error?.message || ""}
+        open={internalError}
+        message={"Something went wrong, Please try again!!!"}
+        handleClose={handleCloseFeedback}
       />
     </>
   );

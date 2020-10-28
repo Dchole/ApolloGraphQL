@@ -2,9 +2,10 @@ import React from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Button from "@material-ui/core/Button";
 import { Field, Form, Formik } from "formik";
-import { registerValidationSchema, registerValues } from "../forms-lib";
 import { TextField } from "formik-material-ui";
 import { useRegisterMutation } from "../generated/graphql";
+import { registerValues } from "../lib/form-values";
+import { registerValidationSchema } from "../lib/validation-schemas";
 import useFormStyles from "../styles/form-styles";
 
 const Register = () => {

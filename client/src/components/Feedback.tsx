@@ -6,7 +6,7 @@ interface IFeedbackProps {
   severity: "success" | "error";
   message: string;
   open: boolean;
-  handleClose?: () => void;
+  handleClose: () => void;
 }
 
 const Feedback: React.FC<IFeedbackProps> = ({
@@ -22,7 +22,11 @@ const Feedback: React.FC<IFeedbackProps> = ({
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
       onClose={handleClose || undefined}
     >
-      <Alert variant="filled" onClose={handleClose} severity={severity}>
+      <Alert
+        severity={severity}
+        onClose={handleClose}
+        style={{ textAlign: "center" }}
+      >
         {message}
       </Alert>
     </Snackbar>
