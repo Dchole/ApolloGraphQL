@@ -12,7 +12,9 @@ import useAccountStyles from "../styles/account-styles";
 
 const Account = () => {
   const classes = useAccountStyles();
-  const { data, loading, error, refetch } = useGetUserQuery();
+  const { data, loading, error, refetch } = useGetUserQuery({
+    notifyOnNetworkStatusChange: true
+  });
 
   return (
     <Box mt={10}>

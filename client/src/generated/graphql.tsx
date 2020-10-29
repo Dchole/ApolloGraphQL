@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+import { FieldPolicy, FieldReadFunction, TypePolicies } from '@apollo/client/cache';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 /** All built-in and custom scalars, mapped to their actual values */
@@ -101,8 +102,10 @@ export type User = {
 
 export type Mission = {
   __typename?: 'Mission';
-  name: Scalars['String'];
+  largePatch: Scalars['String'];
   missionPatch?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  smallPatch: Scalars['String'];
 };
 
 
@@ -196,10 +199,6 @@ export type GetUserQuery = (
   & { me: (
     { __typename?: 'User' }
     & Pick<User, 'username'>
-    & { trips: Array<(
-      { __typename?: 'Launch' }
-      & LaunchQueryPartFragment
-    )> }
   ) }
 );
 
@@ -412,12 +411,9 @@ export const GetUserDocument = gql`
     query GetUser {
   me {
     username
-    trips {
-      ...LaunchQueryPart
-    }
   }
 }
-    ${LaunchQueryPartFragmentDoc}`;
+    `;
 
 /**
  * __useGetUserQuery__
@@ -506,22 +502,125 @@ export function useSignInMutation(baseOptions?: Apollo.MutationHookOptions<SignI
 export type SignInMutationHookResult = ReturnType<typeof useSignInMutation>;
 export type SignInMutationResult = Apollo.MutationResult<SignInMutation>;
 export type SignInMutationOptions = Apollo.BaseMutationOptions<SignInMutation, SignInMutationVariables>;
+export type QueryKeySpecifier = ('launches' | 'launch' | 'me' | QueryKeySpecifier)[];
+export type QueryFieldPolicy = {
+	launches?: FieldPolicy<any> | FieldReadFunction<any>,
+	launch?: FieldPolicy<any> | FieldReadFunction<any>,
+	me?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type MutationKeySpecifier = ('bookTrip' | 'cancelTrip' | 'login' | 'signUp' | MutationKeySpecifier)[];
+export type MutationFieldPolicy = {
+	bookTrip?: FieldPolicy<any> | FieldReadFunction<any>,
+	cancelTrip?: FieldPolicy<any> | FieldReadFunction<any>,
+	login?: FieldPolicy<any> | FieldReadFunction<any>,
+	signUp?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type LaunchConnectionKeySpecifier = ('cursor' | 'hasMore' | 'launches' | LaunchConnectionKeySpecifier)[];
+export type LaunchConnectionFieldPolicy = {
+	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
+	hasMore?: FieldPolicy<any> | FieldReadFunction<any>,
+	launches?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type TripUpdateResponseKeySpecifier = ('success' | 'message' | 'launch' | TripUpdateResponseKeySpecifier)[];
+export type TripUpdateResponseFieldPolicy = {
+	success?: FieldPolicy<any> | FieldReadFunction<any>,
+	message?: FieldPolicy<any> | FieldReadFunction<any>,
+	launch?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type LaunchKeySpecifier = ('id' | 'site' | 'mission' | 'rocket' | 'isBooked' | LaunchKeySpecifier)[];
+export type LaunchFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	site?: FieldPolicy<any> | FieldReadFunction<any>,
+	mission?: FieldPolicy<any> | FieldReadFunction<any>,
+	rocket?: FieldPolicy<any> | FieldReadFunction<any>,
+	isBooked?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type RocketKeySpecifier = ('id' | 'name' | 'type' | RocketKeySpecifier)[];
+export type RocketFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	type?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type UserKeySpecifier = ('id' | 'username' | 'email' | 'trips' | UserKeySpecifier)[];
+export type UserFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	username?: FieldPolicy<any> | FieldReadFunction<any>,
+	email?: FieldPolicy<any> | FieldReadFunction<any>,
+	trips?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type MissionKeySpecifier = ('largePatch' | 'missionPatch' | 'name' | 'smallPatch' | MissionKeySpecifier)[];
+export type MissionFieldPolicy = {
+	largePatch?: FieldPolicy<any> | FieldReadFunction<any>,
+	missionPatch?: FieldPolicy<any> | FieldReadFunction<any>,
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	smallPatch?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type TypedTypePolicies = TypePolicies & {
+	Query?: {
+		keyFields?: false | QueryKeySpecifier | (() => undefined | QueryKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: QueryFieldPolicy,
+	},
+	Mutation?: {
+		keyFields?: false | MutationKeySpecifier | (() => undefined | MutationKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: MutationFieldPolicy,
+	},
+	LaunchConnection?: {
+		keyFields?: false | LaunchConnectionKeySpecifier | (() => undefined | LaunchConnectionKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: LaunchConnectionFieldPolicy,
+	},
+	TripUpdateResponse?: {
+		keyFields?: false | TripUpdateResponseKeySpecifier | (() => undefined | TripUpdateResponseKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: TripUpdateResponseFieldPolicy,
+	},
+	Launch?: {
+		keyFields?: false | LaunchKeySpecifier | (() => undefined | LaunchKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: LaunchFieldPolicy,
+	},
+	Rocket?: {
+		keyFields?: false | RocketKeySpecifier | (() => undefined | RocketKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: RocketFieldPolicy,
+	},
+	User?: {
+		keyFields?: false | UserKeySpecifier | (() => undefined | UserKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: UserFieldPolicy,
+	},
+	Mission?: {
+		keyFields?: false | MissionKeySpecifier | (() => undefined | MissionKeySpecifier),
+		queryType?: true,
+		mutationType?: true,
+		subscriptionType?: true,
+		fields?: MissionFieldPolicy,
+	}
+};
 
-      export interface IntrospectionResultData {
-        __schema: {
-          types: {
-            kind: string;
-            name: string;
-            possibleTypes: {
-              name: string;
-            }[];
-          }[];
-        };
+      export interface PossibleTypesResultData {
+        possibleTypes: {
+          [key: string]: string[]
+        }
       }
-      const result: IntrospectionResultData = {
-  "__schema": {
-    "types": []
-  }
+      const result: PossibleTypesResultData = {
+  "possibleTypes": {}
 };
       export default result;
     
