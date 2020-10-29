@@ -5,16 +5,23 @@ import Avatar from "@material-ui/core/Avatar";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import Skeleton from "@material-ui/lab/Skeleton";
-import ResponseCheck from "../components/ResponseCheck";
-import { useGetUserQuery } from "../generated/graphql";
+import LoadLaunches from "../components/LoadLaunches";
 import LaunchesList from "../components/LaunchesList";
 import useAccountStyles from "../styles/account-styles";
+import { useGetUserQuery } from "../generated/graphql";
+import Error from "../components/Error";
 
 const Account = () => {
   const classes = useAccountStyles();
-  const { data, loading, error, refetch } = useGetUserQuery({
+  const { data, loading, error, refetch, networkStatus } = useGetUserQuery({
     notifyOnNetworkStatusChange: true
   });
+
+  if (error) {
+    return (
+      <Error error={error} refetch={refetch} networkStatus={networkStatus} />
+    );
+  }
 
   return (
     <Box mt={10}>
@@ -45,7 +52,7 @@ const Account = () => {
           <Typography variant="h4" component="h2">
             Booked Trips
           </Typography>
-          <ResponseCheck loading={loading} error={error} refetch={refetch} />
+          <LoadLaunches loading={loading} />
           {data && <LaunchesList isBooked={true} onAccountPage={true} />}
         </Box>
       </Container>

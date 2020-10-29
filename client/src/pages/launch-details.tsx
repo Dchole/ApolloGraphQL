@@ -28,8 +28,9 @@ const LaunchDetails = () => {
   const classes = useDetailStyles(booked);
   const desktopView = useDesktopView();
 
-  const { data, loading, error, refetch } = useGetLaunchDetailsQuery({
-    variables: { id }
+  const { data, error, refetch, networkStatus } = useGetLaunchDetailsQuery({
+    variables: { id },
+    notifyOnNetworkStatusChange: true
   });
 
   const [bookTrip, { loading: bookLoading }] = useBookTripMutation();
@@ -40,8 +41,6 @@ const LaunchDetails = () => {
   useEffect(() => {
     data && setBooked(data.launch.isBooked);
   }, [data]);
-
-  const handleReload = () => refetch({ id });
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -71,7 +70,14 @@ const LaunchDetails = () => {
   };
 
   if (error) {
-    return <Error loading={loading} refetch={handleReload} />;
+    return (
+      <Error
+        networkStatus={networkStatus}
+        refetchVariables={{ id }}
+        refetch={refetch}
+        error={error}
+      />
+    );
   }
 
   return (

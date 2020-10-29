@@ -1,20 +1,12 @@
 import React from "react";
-import { ApolloError } from "@apollo/client";
 import Skeleton from "@material-ui/lab/Skeleton";
 import useCardStyles from "../styles/card-styles";
-import Error from "./Error";
 
 interface IResponseProps {
   loading: boolean;
-  error: ApolloError | undefined;
-  refetch: VoidFunction;
 }
 
-const ResponseCheck: React.FC<IResponseProps> = ({
-  loading,
-  error,
-  refetch
-}) => {
+const ResponseCheck: React.FC<IResponseProps> = ({ loading }) => {
   const classes = useCardStyles();
 
   if (loading)
@@ -33,8 +25,6 @@ const ResponseCheck: React.FC<IResponseProps> = ({
         ))}
       </>
     );
-
-  if (error) return <Error loading={loading} refetch={refetch} />;
 
   return <></>;
 };
