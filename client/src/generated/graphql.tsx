@@ -158,13 +158,13 @@ export type GetLaunchDetailsQuery = (
   { __typename?: 'Query' }
   & { launch: (
     { __typename?: 'Launch' }
-    & Pick<Launch, 'site' | 'isBooked'>
+    & Pick<Launch, 'id' | 'site' | 'isBooked'>
     & { mission: (
       { __typename?: 'Mission' }
       & Pick<Mission, 'name' | 'missionPatch'>
     ), rocket: (
       { __typename?: 'Rocket' }
-      & Pick<Rocket, 'name' | 'type'>
+      & Pick<Rocket, 'id' | 'name' | 'type'>
     ) }
   ) }
 );
@@ -208,7 +208,7 @@ export type LaunchQueryPartFragment = (
   & Pick<Launch, 'id'>
   & { rocket: (
     { __typename?: 'Rocket' }
-    & Pick<Rocket, 'name'>
+    & Pick<Rocket, 'id' | 'name'>
   ), mission: (
     { __typename?: 'Mission' }
     & Pick<Mission, 'name' | 'missionPatch'>
@@ -242,6 +242,7 @@ export const LaunchQueryPartFragmentDoc = gql`
     fragment LaunchQueryPart on Launch {
   id
   rocket {
+    id
     name
   }
   mission {
@@ -327,12 +328,14 @@ export type CancelTripMutationOptions = Apollo.BaseMutationOptions<CancelTripMut
 export const GetLaunchDetailsDocument = gql`
     query GetLaunchDetails($id: ID!) {
   launch(id: $id) {
+    id
     site
     mission {
       name
       missionPatch
     }
     rocket {
+      id
       name
       type
     }

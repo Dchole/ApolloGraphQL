@@ -1,6 +1,7 @@
 fragment LaunchQueryPart on Launch {
   id
   rocket {
+    id
     name
   }
   mission {

@@ -35,7 +35,13 @@ const authLink = setContext((_, { headers }) => {
 
 const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
   link: authLink.concat(httpLink),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache({
+    typePolicies: {
+      Mission: {
+        keyFields: ["name"]
+      }
+    }
+  })
 });
 
 ReactDOM.render(
