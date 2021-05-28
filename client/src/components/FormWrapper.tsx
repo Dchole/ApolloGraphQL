@@ -1,21 +1,22 @@
-import React, { useState } from "react";
-import Container from "@material-ui/core/Container";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
-import useFormWrapperStyles from "../styles/form-wrapper-styles";
-import Login from "./Login";
-import Register from "./Register";
+import React, { useState } from "react"
+import Container from "@material-ui/core/Container"
+import Typography from "@material-ui/core/Typography"
+import Paper from "@material-ui/core/Paper"
+import Grid from "@material-ui/core/Grid"
+import Link from "@material-ui/core/Link"
+import useFormWrapperStyles from "../styles/form-wrapper-styles"
+import Login from "./Login"
+import Register from "./Register"
 
 interface IFormWrapperProps {
-  handleSetAuth: () => void;
+  handleSetAuth: () => void
 }
 
 const FormWrapper: React.FC<IFormWrapperProps> = ({ handleSetAuth }) => {
-  const classes = useFormWrapperStyles();
-  const [login, setLogin] = useState(true);
+  const classes = useFormWrapperStyles()
+  const [login, setLogin] = useState(true)
 
-  const handleChangeFace = () => setLogin(!login);
+  const handleChangeFace = () => setLogin(!login)
 
   return (
     <Container component="section" maxWidth="xs" className={classes.root}>
@@ -25,20 +26,15 @@ const FormWrapper: React.FC<IFormWrapperProps> = ({ handleSetAuth }) => {
         </Typography>
         {login ? <Login handleSetAuth={handleSetAuth} /> : <Register />}
         <Grid container justify="flex-end" className={classes.link}>
-          <Typography
-            variant="body1"
-            color="primary"
-            role="a"
-            onClick={handleChangeFace}
-          >
+          <Link href="#" onClick={handleChangeFace}>
             {login
               ? "Don't have an account? Sign Up"
               : "Already have an account? Login"}
-          </Typography>
+          </Link>
         </Grid>
       </Paper>
     </Container>
-  );
-};
+  )
+}
 
-export default FormWrapper;
+export default FormWrapper

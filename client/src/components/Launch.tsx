@@ -1,15 +1,14 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import Typography from "@material-ui/core/Typography";
-import useCardStyles from "../styles/card-styles";
+import { Link } from "react-router-dom"
+import Card from "@material-ui/core/Card"
+import CardActionArea from "@material-ui/core/CardActionArea"
+import Typography from "@material-ui/core/Typography"
+import useCardStyles from "../styles/card-styles"
 
 interface ILaunchProps {
-  id: string;
-  missionName: string;
-  missionPatch: string | undefined | null;
-  rocketName: string;
+  id: string
+  missionName: string
+  missionPatch: string | undefined | null
+  rocketName: string
 }
 
 const Launch: React.FC<ILaunchProps> = ({
@@ -18,7 +17,7 @@ const Launch: React.FC<ILaunchProps> = ({
   missionPatch,
   rocketName
 }) => {
-  const classes = useCardStyles();
+  const classes = useCardStyles()
 
   return (
     <Card variant="outlined" className={classes.root}>
@@ -39,7 +38,7 @@ const Launch: React.FC<ILaunchProps> = ({
         {missionPatch && <img src={missionPatch} alt={missionName} />}
       </CardActionArea>
     </Card>
-  );
-};
+  )
+}
 
-export default Launch;
+export default Launch

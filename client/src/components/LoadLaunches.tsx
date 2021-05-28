@@ -1,13 +1,12 @@
-import React from "react";
-import Skeleton from "@material-ui/lab/Skeleton";
-import useCardStyles from "../styles/card-styles";
+import Skeleton from "@material-ui/lab/Skeleton"
+import useCardStyles from "../styles/card-styles"
 
 interface IResponseProps {
-  loading: boolean;
+  loading: boolean
 }
 
 const ResponseCheck: React.FC<IResponseProps> = ({ loading }) => {
-  const classes = useCardStyles();
+  const classes = useCardStyles()
 
   if (loading)
     return (
@@ -24,9 +23,9 @@ const ResponseCheck: React.FC<IResponseProps> = ({ loading }) => {
           />
         ))}
       </>
-    );
+    )
 
-  return <></>;
-};
+  return <></>
+}
 
-export default ResponseCheck;
+export default ResponseCheck

@@ -1,24 +1,23 @@
-import React from "react";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Button from "@material-ui/core/Button";
-import { Field, Form, Formik } from "formik";
-import { TextField } from "formik-material-ui";
-import { useSignInMutation } from "../generated/graphql";
-import { loginValues } from "../lib/form-values";
-import { loginValidationSchema } from "../lib/validation-schemas";
-import { handleLoginSubmit } from "../lib/submit-functions";
-import useFormStyles from "../styles/form-styles";
-import Feedback from "./Feedback";
-import useInternalError from "../hooks/useInternalError";
+import CircularProgress from "@material-ui/core/CircularProgress"
+import Button from "@material-ui/core/Button"
+import { Field, Form, Formik } from "formik"
+import { TextField } from "formik-material-ui"
+import { useSignInMutation } from "../generated/graphql"
+import { loginValues } from "../lib/form-values"
+import { loginValidationSchema } from "../lib/validation-schemas"
+import { handleLoginSubmit } from "../lib/submit-functions"
+import useFormStyles from "../styles/form-styles"
+import Feedback from "./Feedback"
+import useInternalError from "../hooks/useInternalError"
 
 interface ILoginProps {
-  handleSetAuth: () => void;
+  handleSetAuth: () => void
 }
 
 const Login: React.FC<ILoginProps> = ({ handleSetAuth }) => {
-  const classes = useFormStyles();
-  const [login, { loading, error }] = useSignInMutation({ errorPolicy: "all" });
-  const { internalError, handleClose } = useInternalError(error);
+  const classes = useFormStyles()
+  const [login, { loading, error }] = useSignInMutation({ errorPolicy: "all" })
+  const { internalError, handleClose } = useInternalError(error)
 
   return (
     <>
@@ -30,7 +29,7 @@ const Login: React.FC<ILoginProps> = ({ handleSetAuth }) => {
         }
       >
         {({ errors, touched }) => (
-          <Form>
+          <Form id="sign-in" name="sign-in">
             <Field
               error={Boolean(errors.email) && touched.email}
               helperText={touched.email && errors.email}
@@ -41,7 +40,6 @@ const Login: React.FC<ILoginProps> = ({ handleSetAuth }) => {
               name="email"
               type="email"
               label="Email"
-              autoComplete="email"
               autoFocus
               fullWidth
             />
@@ -50,11 +48,10 @@ const Login: React.FC<ILoginProps> = ({ handleSetAuth }) => {
               helperText={touched.password && errors.password}
               component={TextField}
               variant="outlined"
-              id="password"
+              id="current-password"
               name="password"
               type="password"
               label="Password"
-              autoComplete="current-password"
               className={classes.field}
               fullWidth
             />
@@ -79,7 +76,7 @@ const Login: React.FC<ILoginProps> = ({ handleSetAuth }) => {
         handleClose={handleClose}
       />
     </>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

@@ -1,26 +1,25 @@
-import React from "react";
-import Box from "@material-ui/core/Box";
-import Grid from "@material-ui/core/Grid";
-import Avatar from "@material-ui/core/Avatar";
-import Container from "@material-ui/core/Container";
-import Typography from "@material-ui/core/Typography";
-import Skeleton from "@material-ui/lab/Skeleton";
-import LoadLaunches from "../components/LoadLaunches";
-import LaunchesList from "../components/LaunchesList";
-import useAccountStyles from "../styles/account-styles";
-import { useGetUserQuery } from "../generated/graphql";
-import Error from "../components/Error";
+import Box from "@material-ui/core/Box"
+import Grid from "@material-ui/core/Grid"
+import Avatar from "@material-ui/core/Avatar"
+import Container from "@material-ui/core/Container"
+import Typography from "@material-ui/core/Typography"
+import Skeleton from "@material-ui/lab/Skeleton"
+import LoadLaunches from "../components/LoadLaunches"
+import LaunchesList from "../components/LaunchesList"
+import useAccountStyles from "../styles/account-styles"
+import { useGetUserQuery } from "../generated/graphql"
+import Error from "../components/Error"
 
 const Account = () => {
-  const classes = useAccountStyles();
+  const classes = useAccountStyles()
   const { data, loading, error, refetch, networkStatus } = useGetUserQuery({
     notifyOnNetworkStatusChange: true
-  });
+  })
 
   if (error) {
     return (
       <Error error={error} refetch={refetch} networkStatus={networkStatus} />
-    );
+    )
   }
 
   return (
@@ -57,7 +56,7 @@ const Account = () => {
         </Box>
       </Container>
     </Box>
-  );
-};
+  )
+}
 
-export default Account;
+export default Account

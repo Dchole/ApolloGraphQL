@@ -1,12 +1,11 @@
-import React from "react";
-import Snackbar from "@material-ui/core/Snackbar";
-import Alert from "@material-ui/lab/Alert";
+import Snackbar from "@material-ui/core/Snackbar"
+import Alert from "@material-ui/lab/Alert"
 
 interface IFeedbackProps {
-  severity: "success" | "error";
-  message: string;
-  open: boolean;
-  handleClose: () => void;
+  severity: "success" | "error"
+  message: string
+  open: boolean
+  handleClose: () => void
 }
 
 const Feedback: React.FC<IFeedbackProps> = ({
@@ -30,7 +29,7 @@ const Feedback: React.FC<IFeedbackProps> = ({
         {message}
       </Alert>
     </Snackbar>
-  );
-};
+  )
+}
 
-export default Feedback;
+export default Feedback

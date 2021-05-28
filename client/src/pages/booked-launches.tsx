@@ -1,6 +1,5 @@
-import React from "react";
-import LaunchesList from "../components/LaunchesList";
+import LaunchesList from "../components/LaunchesList"
 
-const BookedLaunches = () => <LaunchesList isBooked={true} />;
+const BookedLaunches = () => <LaunchesList isBooked={true} />
 
-export default BookedLaunches;
+export default BookedLaunches
