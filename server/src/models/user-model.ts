@@ -1,13 +1,13 @@
-import { Document, model, Schema } from "mongoose";
+import { Document, model, Schema } from "mongoose"
 
 export interface IUser {
-  username: string;
-  email: string;
-  password: string;
+  username: string
+  email: string
+  password: string
 }
 
 export interface IUserSchema extends Document, IUser {
-  bookedTrips?: string[];
+  bookedTrips?: string[]
 }
 
 const UserSchema = new Schema({
@@ -15,7 +15,6 @@ const UserSchema = new Schema({
     type: String,
     min: 3,
     max: 20,
-    unique: true,
     required: true
   },
   email: {
@@ -34,6 +33,6 @@ const UserSchema = new Schema({
       unique: true
     }
   ]
-});
+})
 
-export default model<IUserSchema>("User", UserSchema);
+export default model<IUserSchema>("User", UserSchema)

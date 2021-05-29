@@ -37,6 +37,9 @@ const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache({
     typePolicies: {
+      Launch: {
+        keyFields: ["id", "mission", ["name"]]
+      },
       Mission: {
         keyFields: ["name"]
       }

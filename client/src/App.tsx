@@ -6,6 +6,8 @@ import LaunchDetails from "./pages/launch-details"
 import BookedLaunches from "./pages/booked-launches"
 import Account from "./pages/account"
 
+import "@fontsource/roboto"
+
 function App() {
   return (
     <BrowserRouter>

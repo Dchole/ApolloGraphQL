@@ -1,42 +1,36 @@
-import clsx from "clsx";
-import React, { useEffect, useState } from "react";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Container from "@material-ui/core/Container";
-import Button from "@material-ui/core/Button";
-import Launch from "../components/Launch";
-import LoadLaunches from "./LoadLaunches";
-import useLaunchesStyles from "../styles/launches-styles";
-import { GetLaunchesQuery, useGetLaunchesQuery } from "../generated/graphql";
-import useDesktopView from "../hooks/useDesktopView";
-import Error from "./Error";
+import clsx from "clsx"
+import React, { useEffect, useState } from "react"
+import CircularProgress from "@material-ui/core/CircularProgress"
+import Container from "@material-ui/core/Container"
+import Button from "@material-ui/core/Button"
+import Launch from "../components/Launch"
+import LoadLaunches from "./LoadLaunches"
+import useLaunchesStyles from "../styles/launches-styles"
+import { GetLaunchesQuery, useGetLaunchesQuery } from "../generated/graphql"
+import useDesktopView from "../hooks/useDesktopView"
+import Error from "./Error"
 
 interface ILaunchesListProps {
-  isBooked?: boolean;
-  onAccountPage?: boolean;
+  isBooked?: boolean
+  onAccountPage?: boolean
 }
 
 const LaunchesList: React.FC<ILaunchesListProps> = ({
   isBooked,
   onAccountPage
 }) => {
-  const variables = { pageSize: 5, after: null, isBooked };
+  const variables = { pageSize: 5, after: null, isBooked }
 
-  const desktopView = useDesktopView();
-  const classes = useLaunchesStyles(desktopView);
-  const [loadMore, setLoadMore] = useState(false);
-  const {
-    data,
-    error,
-    loading,
-    fetchMore,
-    refetch,
-    networkStatus
-  } = useGetLaunchesQuery({
-    variables,
-    notifyOnNetworkStatusChange: true
-  });
+  const desktopView = useDesktopView()
+  const classes = useLaunchesStyles(desktopView)
+  const [loadMore, setLoadMore] = useState(false)
+  const { data, error, loading, fetchMore, refetch, networkStatus } =
+    useGetLaunchesQuery({
+      variables,
+      notifyOnNetworkStatusChange: true
+    })
 
-  const handleLoadMore = () => setLoadMore(true);
+  const handleLoadMore = () => setLoadMore(true)
 
   const mergeResult = (
     prev: GetLaunchesQuery,
@@ -45,13 +39,13 @@ const LaunchesList: React.FC<ILaunchesListProps> = ({
     const mergedLaunches = [
       ...prev.launches.launches,
       ...result.launches.launches
-    ];
+    ]
 
-    const mergedData = { ...prev, ...result };
-    mergedData.launches.launches = mergedLaunches;
+    const mergedData = { ...prev, ...result }
+    mergedData.launches.launches = mergedLaunches
 
-    return mergedData;
-  };
+    return mergedData
+  }
 
   useEffect(() => {
     if (loadMore) {
@@ -62,14 +56,14 @@ const LaunchesList: React.FC<ILaunchesListProps> = ({
           prev: GetLaunchesQuery,
           { fetchMoreResult }: { fetchMoreResult: GetLaunchesQuery }
         ) => {
-          setLoadMore(false);
+          setLoadMore(false)
 
-          if (!fetchMoreResult) return prev;
-          return mergeResult(prev, fetchMoreResult);
+          if (!fetchMoreResult) return prev
+          return mergeResult(prev, fetchMoreResult)
         }
-      });
+      })
     }
-  }, [loadMore, data, fetchMore, isBooked]);
+  }, [loadMore, data, fetchMore, isBooked])
 
   if (error)
     return (
@@ -79,7 +73,7 @@ const LaunchesList: React.FC<ILaunchesListProps> = ({
         refetchVariables={variables}
         networkStatus={networkStatus}
       />
-    );
+    )
 
   return (
     <Container
@@ -91,8 +85,8 @@ const LaunchesList: React.FC<ILaunchesListProps> = ({
       <LoadLaunches loading={loading} />
       {data?.launches.launches.map(launch => (
         <Launch
-          key={launch.id}
-          id={launch.id}
+          key={launch.id + launch.mission.name}
+          id={launch.id + launch.mission.name}
           missionName={launch.mission.name}
           missionPatch={launch.mission.missionPatch}
           rocketName={launch.rocket.name}
@@ -116,7 +110,7 @@ const LaunchesList: React.FC<ILaunchesListProps> = ({
         </div>
       )}
     </Container>
-  );
-};
+  )
+}
 
-export default LaunchesList;
+export default LaunchesList
