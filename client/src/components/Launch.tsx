@@ -35,7 +35,9 @@ const Launch: React.FC<ILaunchProps> = ({
             {rocketName}
           </Typography>
         </div>
-        {missionPatch && <img src={missionPatch} alt={missionName} />}
+        {missionPatch && (
+          <img src={missionPatch} alt={missionName} width="60" height="60" />
+        )}
       </CardActionArea>
     </Card>
   )

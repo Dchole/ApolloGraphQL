@@ -1,6 +1,8 @@
 import { GraphQLResolveInfo } from 'graphql';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
@@ -19,23 +21,39 @@ export type Scalars = {
 
 
 
-export type Query = {
-  __typename?: 'Query';
-  launches: LaunchConnection;
-  launch: Launch;
-  me: User;
-};
-
-
-export type QueryLaunchesArgs = {
-  pageSize?: Maybe<Scalars['Int']>;
-  after?: Maybe<Scalars['Int']>;
-  isBooked?: Maybe<Scalars['Boolean']>;
-};
-
-
-export type QueryLaunchArgs = {
+export type Launch = {
+  __typename?: 'Launch';
   id: Scalars['ID'];
+  details?: Maybe<Scalars['String']>;
+  site: Scalars['String'];
+  mission: Mission;
+  rocket: Rocket;
+  isBooked: Scalars['Boolean'];
+  links: Links;
+};
+
+export type LaunchConnection = {
+  __typename?: 'LaunchConnection';
+  cursor?: Maybe<Scalars['Int']>;
+  hasMore: Scalars['Boolean'];
+  launches: Array<Launch>;
+};
+
+export type Links = {
+  __typename?: 'Links';
+  article?: Maybe<Scalars['String']>;
+  video?: Maybe<Scalars['String']>;
+};
+
+export type Mission = {
+  __typename?: 'Mission';
+  name: Scalars['String'];
+  missionPatch?: Maybe<Scalars['String']>;
+};
+
+
+export type MissionMissionPatchArgs = {
+  size?: Maybe<PatchSize>;
 };
 
 export type Mutation = {
@@ -69,27 +87,28 @@ export type MutationSignUpArgs = {
   password: Scalars['String'];
 };
 
-export type LaunchConnection = {
-  __typename?: 'LaunchConnection';
-  cursor?: Maybe<Scalars['Int']>;
-  hasMore: Scalars['Boolean'];
-  launches: Array<Launch>;
-};
+export enum PatchSize {
+  Small = 'SMALL',
+  Large = 'LARGE'
+}
 
-export type TripUpdateResponse = {
-  __typename?: 'TripUpdateResponse';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
+export type Query = {
+  __typename?: 'Query';
+  launches: LaunchConnection;
   launch: Launch;
+  me: User;
 };
 
-export type Launch = {
-  __typename?: 'Launch';
+
+export type QueryLaunchesArgs = {
+  pageSize?: Maybe<Scalars['Int']>;
+  after?: Maybe<Scalars['Int']>;
+  isBooked?: Maybe<Scalars['Boolean']>;
+};
+
+
+export type QueryLaunchArgs = {
   id: Scalars['ID'];
-  site: Scalars['String'];
-  mission: Mission;
-  rocket: Rocket;
-  isBooked: Scalars['Boolean'];
 };
 
 export type Rocket = {
@@ -99,6 +118,13 @@ export type Rocket = {
   type: Scalars['String'];
 };
 
+export type TripUpdateResponse = {
+  __typename?: 'TripUpdateResponse';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  launch: Launch;
+};
+
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
@@ -106,22 +132,6 @@ export type User = {
   email: Scalars['String'];
   trips: Array<Launch>;
 };
-
-export type Mission = {
-  __typename?: 'Mission';
-  name: Scalars['String'];
-  missionPatch?: Maybe<Scalars['String']>;
-};
-
-
-export type MissionMissionPatchArgs = {
-  size?: Maybe<PatchSize>;
-};
-
-export enum PatchSize {
-  Small = 'SMALL',
-  Large = 'LARGE'
-}
 
 export type AdditionalEntityFields = {
   path?: Maybe<Scalars['String']>;
@@ -206,36 +216,38 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
-  Query: ResolverTypeWrapper<{}>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  ID: ResolverTypeWrapper<Scalars['ID']>;
-  Mutation: ResolverTypeWrapper<{}>;
-  String: ResolverTypeWrapper<Scalars['String']>;
-  LaunchConnection: ResolverTypeWrapper<LaunchConnection>;
-  TripUpdateResponse: ResolverTypeWrapper<TripUpdateResponse>;
   Launch: ResolverTypeWrapper<Launch>;
-  Rocket: ResolverTypeWrapper<Rocket>;
-  User: ResolverTypeWrapper<User>;
+  ID: ResolverTypeWrapper<Scalars['ID']>;
+  String: ResolverTypeWrapper<Scalars['String']>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  LaunchConnection: ResolverTypeWrapper<LaunchConnection>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
+  Links: ResolverTypeWrapper<Links>;
   Mission: ResolverTypeWrapper<Mission>;
+  Mutation: ResolverTypeWrapper<{}>;
   PatchSize: PatchSize;
+  Query: ResolverTypeWrapper<{}>;
+  Rocket: ResolverTypeWrapper<Rocket>;
+  TripUpdateResponse: ResolverTypeWrapper<TripUpdateResponse>;
+  User: ResolverTypeWrapper<User>;
   AdditionalEntityFields: AdditionalEntityFields;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
-  Query: {};
-  Int: Scalars['Int'];
-  Boolean: Scalars['Boolean'];
-  ID: Scalars['ID'];
-  Mutation: {};
-  String: Scalars['String'];
-  LaunchConnection: LaunchConnection;
-  TripUpdateResponse: TripUpdateResponse;
   Launch: Launch;
-  Rocket: Rocket;
-  User: User;
+  ID: Scalars['ID'];
+  String: Scalars['String'];
+  Boolean: Scalars['Boolean'];
+  LaunchConnection: LaunchConnection;
+  Int: Scalars['Int'];
+  Links: Links;
   Mission: Mission;
+  Mutation: {};
+  Query: {};
+  Rocket: Rocket;
+  TripUpdateResponse: TripUpdateResponse;
+  User: User;
   AdditionalEntityFields: AdditionalEntityFields;
 };
 
@@ -274,17 +286,15 @@ export type MapDirectiveArgs = {   path: Scalars['String']; };
 
 export type MapDirectiveResolver<Result, Parent, ContextType = any, Args = MapDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
 
-export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  launches?: Resolver<ResolversTypes['LaunchConnection'], ParentType, ContextType, RequireFields<QueryLaunchesArgs, never>>;
-  launch?: Resolver<ResolversTypes['Launch'], ParentType, ContextType, RequireFields<QueryLaunchArgs, 'id'>>;
-  me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
-};
-
-export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  bookTrip?: Resolver<ResolversTypes['TripUpdateResponse'], ParentType, ContextType, RequireFields<MutationBookTripArgs, 'launchId'>>;
-  cancelTrip?: Resolver<ResolversTypes['TripUpdateResponse'], ParentType, ContextType, RequireFields<MutationCancelTripArgs, 'launchId'>>;
-  login?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
-  signUp?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationSignUpArgs, 'username' | 'email' | 'password'>>;
+export type LaunchResolvers<ContextType = any, ParentType extends ResolversParentTypes['Launch'] = ResolversParentTypes['Launch']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  details?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  site?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  mission?: Resolver<ResolversTypes['Mission'], ParentType, ContextType>;
+  rocket?: Resolver<ResolversTypes['Rocket'], ParentType, ContextType>;
+  isBooked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  links?: Resolver<ResolversTypes['Links'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type LaunchConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['LaunchConnection'] = ResolversParentTypes['LaunchConnection']> = {
@@ -294,26 +304,42 @@ export type LaunchConnectionResolvers<ContextType = any, ParentType extends Reso
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type TripUpdateResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['TripUpdateResponse'] = ResolversParentTypes['TripUpdateResponse']> = {
-  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  launch?: Resolver<ResolversTypes['Launch'], ParentType, ContextType>;
+export type LinksResolvers<ContextType = any, ParentType extends ResolversParentTypes['Links'] = ResolversParentTypes['Links']> = {
+  article?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  video?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type LaunchResolvers<ContextType = any, ParentType extends ResolversParentTypes['Launch'] = ResolversParentTypes['Launch']> = {
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  site?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  mission?: Resolver<ResolversTypes['Mission'], ParentType, ContextType>;
-  rocket?: Resolver<ResolversTypes['Rocket'], ParentType, ContextType>;
-  isBooked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+export type MissionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mission'] = ResolversParentTypes['Mission']> = {
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  missionPatch?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<MissionMissionPatchArgs, never>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  bookTrip?: Resolver<ResolversTypes['TripUpdateResponse'], ParentType, ContextType, RequireFields<MutationBookTripArgs, 'launchId'>>;
+  cancelTrip?: Resolver<ResolversTypes['TripUpdateResponse'], ParentType, ContextType, RequireFields<MutationCancelTripArgs, 'launchId'>>;
+  login?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'email' | 'password'>>;
+  signUp?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationSignUpArgs, 'username' | 'email' | 'password'>>;
+};
+
+export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  launches?: Resolver<ResolversTypes['LaunchConnection'], ParentType, ContextType, RequireFields<QueryLaunchesArgs, never>>;
+  launch?: Resolver<ResolversTypes['Launch'], ParentType, ContextType, RequireFields<QueryLaunchArgs, 'id'>>;
+  me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
 };
 
 export type RocketResolvers<ContextType = any, ParentType extends ResolversParentTypes['Rocket'] = ResolversParentTypes['Rocket']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TripUpdateResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['TripUpdateResponse'] = ResolversParentTypes['TripUpdateResponse']> = {
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  launch?: Resolver<ResolversTypes['Launch'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -325,21 +351,16 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MissionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mission'] = ResolversParentTypes['Mission']> = {
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  missionPatch?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<MissionMissionPatchArgs, never>>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type Resolvers<ContextType = any> = {
-  Query?: QueryResolvers<ContextType>;
-  Mutation?: MutationResolvers<ContextType>;
-  LaunchConnection?: LaunchConnectionResolvers<ContextType>;
-  TripUpdateResponse?: TripUpdateResponseResolvers<ContextType>;
   Launch?: LaunchResolvers<ContextType>;
-  Rocket?: RocketResolvers<ContextType>;
-  User?: UserResolvers<ContextType>;
+  LaunchConnection?: LaunchConnectionResolvers<ContextType>;
+  Links?: LinksResolvers<ContextType>;
   Mission?: MissionResolvers<ContextType>;
+  Mutation?: MutationResolvers<ContextType>;
+  Query?: QueryResolvers<ContextType>;
+  Rocket?: RocketResolvers<ContextType>;
+  TripUpdateResponse?: TripUpdateResponseResolvers<ContextType>;
+  User?: UserResolvers<ContextType>;
 };
 
 

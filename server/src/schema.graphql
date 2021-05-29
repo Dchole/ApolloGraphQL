@@ -25,10 +25,17 @@ type TripUpdateResponse {
 
 type Launch {
   id: ID!
+  details: String
   site: String!
   mission: Mission!
   rocket: Rocket!
   isBooked: Boolean!
+  links: Links!
+}
+
+type Links {
+  article: String
+  video: String
 }
 
 type Rocket {

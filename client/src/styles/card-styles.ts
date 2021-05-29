@@ -1,4 +1,4 @@
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 
 const useCardStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -11,8 +11,6 @@ const useCardStyles = makeStyles((theme: Theme) =>
       padding: theme.spacing(2, 2, 5),
 
       "& img": {
-        height: 60,
-        width: 60,
         position: "absolute",
         bottom: 0,
         right: 0,
@@ -23,6 +21,6 @@ const useCardStyles = makeStyles((theme: Theme) =>
       width: "100%"
     }
   })
-);
+)
 
-export default useCardStyles;
+export default useCardStyles
