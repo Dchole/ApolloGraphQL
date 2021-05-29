@@ -1,4 +1,4 @@
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 
 const useDetailStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,6 +44,16 @@ const useDetailStyles = makeStyles((theme: Theme) =>
         ? theme.palette.buttonSecondary.main
         : theme.palette.primary.main
     }),
+    links: {
+      display: "flex",
+      justifyContent: "flex-end",
+      gap: theme.spacing(2),
+
+      "& a": {
+        fontSize: "1.02rem",
+        color: theme.palette.info.main
+      }
+    },
     errorBtnWrapper: {
       justifyContent: "center",
 
@@ -52,6 +62,6 @@ const useDetailStyles = makeStyles((theme: Theme) =>
       }
     }
   })
-);
+)
 
-export default useDetailStyles;
+export default useDetailStyles

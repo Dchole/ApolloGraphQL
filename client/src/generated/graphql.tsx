@@ -1,8 +1,11 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
-import { FieldPolicy, FieldReadFunction, TypePolicies } from '@apollo/client/cache';
+import { FieldPolicy, FieldReadFunction, TypePolicies, TypePolicy } from '@apollo/client/cache';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+const defaultOptions =  {}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -12,23 +15,39 @@ export type Scalars = {
   Float: number;
 };
 
-export type Query = {
-  __typename?: 'Query';
-  launches: LaunchConnection;
-  launch: Launch;
-  me: User;
-};
-
-
-export type QueryLaunchesArgs = {
-  pageSize?: Maybe<Scalars['Int']>;
-  after?: Maybe<Scalars['Int']>;
-  isBooked?: Maybe<Scalars['Boolean']>;
-};
-
-
-export type QueryLaunchArgs = {
+export type Launch = {
+  __typename?: 'Launch';
   id: Scalars['ID'];
+  details?: Maybe<Scalars['String']>;
+  site: Scalars['String'];
+  mission: Mission;
+  rocket: Rocket;
+  isBooked: Scalars['Boolean'];
+  links: Links;
+};
+
+export type LaunchConnection = {
+  __typename?: 'LaunchConnection';
+  cursor?: Maybe<Scalars['Int']>;
+  hasMore: Scalars['Boolean'];
+  launches: Array<Launch>;
+};
+
+export type Links = {
+  __typename?: 'Links';
+  article?: Maybe<Scalars['String']>;
+  video?: Maybe<Scalars['String']>;
+};
+
+export type Mission = {
+  __typename?: 'Mission';
+  name: Scalars['String'];
+  missionPatch?: Maybe<Scalars['String']>;
+};
+
+
+export type MissionMissionPatchArgs = {
+  size?: Maybe<PatchSize>;
 };
 
 export type Mutation = {
@@ -62,27 +81,28 @@ export type MutationSignUpArgs = {
   password: Scalars['String'];
 };
 
-export type LaunchConnection = {
-  __typename?: 'LaunchConnection';
-  cursor?: Maybe<Scalars['Int']>;
-  hasMore: Scalars['Boolean'];
-  launches: Array<Launch>;
-};
+export enum PatchSize {
+  Small = 'SMALL',
+  Large = 'LARGE'
+}
 
-export type TripUpdateResponse = {
-  __typename?: 'TripUpdateResponse';
-  success: Scalars['Boolean'];
-  message: Scalars['String'];
+export type Query = {
+  __typename?: 'Query';
+  launches: LaunchConnection;
   launch: Launch;
+  me: User;
 };
 
-export type Launch = {
-  __typename?: 'Launch';
+
+export type QueryLaunchesArgs = {
+  pageSize?: Maybe<Scalars['Int']>;
+  after?: Maybe<Scalars['Int']>;
+  isBooked?: Maybe<Scalars['Boolean']>;
+};
+
+
+export type QueryLaunchArgs = {
   id: Scalars['ID'];
-  site: Scalars['String'];
-  mission: Mission;
-  rocket: Rocket;
-  isBooked: Scalars['Boolean'];
 };
 
 export type Rocket = {
@@ -92,6 +112,13 @@ export type Rocket = {
   type: Scalars['String'];
 };
 
+export type TripUpdateResponse = {
+  __typename?: 'TripUpdateResponse';
+  success: Scalars['Boolean'];
+  message: Scalars['String'];
+  launch: Launch;
+};
+
 export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
@@ -99,24 +126,6 @@ export type User = {
   email: Scalars['String'];
   trips: Array<Launch>;
 };
-
-export type Mission = {
-  __typename?: 'Mission';
-  largePatch: Scalars['String'];
-  missionPatch?: Maybe<Scalars['String']>;
-  name: Scalars['String'];
-  smallPatch: Scalars['String'];
-};
-
-
-export type MissionMissionPatchArgs = {
-  size?: Maybe<PatchSize>;
-};
-
-export enum PatchSize {
-  Small = 'SMALL',
-  Large = 'LARGE'
-}
 
 export type BookTripMutationVariables = Exact<{
   launchId: Scalars['ID'];
@@ -161,13 +170,16 @@ export type GetLaunchDetailsQuery = (
   { __typename?: 'Query' }
   & { launch: (
     { __typename?: 'Launch' }
-    & Pick<Launch, 'id' | 'site' | 'isBooked'>
+    & Pick<Launch, 'id' | 'site' | 'details' | 'isBooked'>
     & { mission: (
       { __typename?: 'Mission' }
       & Pick<Mission, 'name' | 'missionPatch'>
     ), rocket: (
       { __typename?: 'Rocket' }
       & Pick<Rocket, 'id' | 'name' | 'type'>
+    ), links: (
+      { __typename?: 'Links' }
+      & Pick<Links, 'article' | 'video'>
     ) }
   ) }
 );
@@ -282,7 +294,8 @@ export type BookTripMutationFn = Apollo.MutationFunction<BookTripMutation, BookT
  * });
  */
 export function useBookTripMutation(baseOptions?: Apollo.MutationHookOptions<BookTripMutation, BookTripMutationVariables>) {
-        return Apollo.useMutation<BookTripMutation, BookTripMutationVariables>(BookTripDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<BookTripMutation, BookTripMutationVariables>(BookTripDocument, options);
       }
 export type BookTripMutationHookResult = ReturnType<typeof useBookTripMutation>;
 export type BookTripMutationResult = Apollo.MutationResult<BookTripMutation>;
@@ -319,7 +332,8 @@ export type CancelTripMutationFn = Apollo.MutationFunction<CancelTripMutation, C
  * });
  */
 export function useCancelTripMutation(baseOptions?: Apollo.MutationHookOptions<CancelTripMutation, CancelTripMutationVariables>) {
-        return Apollo.useMutation<CancelTripMutation, CancelTripMutationVariables>(CancelTripDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CancelTripMutation, CancelTripMutationVariables>(CancelTripDocument, options);
       }
 export type CancelTripMutationHookResult = ReturnType<typeof useCancelTripMutation>;
 export type CancelTripMutationResult = Apollo.MutationResult<CancelTripMutation>;
@@ -329,6 +343,7 @@ export const GetLaunchDetailsDocument = gql`
   launch(id: $id) {
     id
     site
+    details
     mission {
       name
       missionPatch
@@ -337,6 +352,10 @@ export const GetLaunchDetailsDocument = gql`
       id
       name
       type
+    }
+    links {
+      article
+      video
     }
     isBooked
   }
@@ -359,11 +378,13 @@ export const GetLaunchDetailsDocument = gql`
  *   },
  * });
  */
-export function useGetLaunchDetailsQuery(baseOptions?: Apollo.QueryHookOptions<GetLaunchDetailsQuery, GetLaunchDetailsQueryVariables>) {
-        return Apollo.useQuery<GetLaunchDetailsQuery, GetLaunchDetailsQueryVariables>(GetLaunchDetailsDocument, baseOptions);
+export function useGetLaunchDetailsQuery(baseOptions: Apollo.QueryHookOptions<GetLaunchDetailsQuery, GetLaunchDetailsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetLaunchDetailsQuery, GetLaunchDetailsQueryVariables>(GetLaunchDetailsDocument, options);
       }
 export function useGetLaunchDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetLaunchDetailsQuery, GetLaunchDetailsQueryVariables>) {
-          return Apollo.useLazyQuery<GetLaunchDetailsQuery, GetLaunchDetailsQueryVariables>(GetLaunchDetailsDocument, baseOptions);
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetLaunchDetailsQuery, GetLaunchDetailsQueryVariables>(GetLaunchDetailsDocument, options);
         }
 export type GetLaunchDetailsQueryHookResult = ReturnType<typeof useGetLaunchDetailsQuery>;
 export type GetLaunchDetailsLazyQueryHookResult = ReturnType<typeof useGetLaunchDetailsLazyQuery>;
@@ -399,10 +420,12 @@ export const GetLaunchesDocument = gql`
  * });
  */
 export function useGetLaunchesQuery(baseOptions?: Apollo.QueryHookOptions<GetLaunchesQuery, GetLaunchesQueryVariables>) {
-        return Apollo.useQuery<GetLaunchesQuery, GetLaunchesQueryVariables>(GetLaunchesDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetLaunchesQuery, GetLaunchesQueryVariables>(GetLaunchesDocument, options);
       }
 export function useGetLaunchesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetLaunchesQuery, GetLaunchesQueryVariables>) {
-          return Apollo.useLazyQuery<GetLaunchesQuery, GetLaunchesQueryVariables>(GetLaunchesDocument, baseOptions);
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetLaunchesQuery, GetLaunchesQueryVariables>(GetLaunchesDocument, options);
         }
 export type GetLaunchesQueryHookResult = ReturnType<typeof useGetLaunchesQuery>;
 export type GetLaunchesLazyQueryHookResult = ReturnType<typeof useGetLaunchesLazyQuery>;
@@ -431,10 +454,12 @@ export const GetUserDocument = gql`
  * });
  */
 export function useGetUserQuery(baseOptions?: Apollo.QueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
-        return Apollo.useQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, options);
       }
 export function useGetUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
-          return Apollo.useLazyQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, baseOptions);
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, options);
         }
 export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
 export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
@@ -466,7 +491,8 @@ export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, Regis
  * });
  */
 export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<RegisterMutation, RegisterMutationVariables>) {
-        return Apollo.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument, options);
       }
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
@@ -497,16 +523,37 @@ export type SignInMutationFn = Apollo.MutationFunction<SignInMutation, SignInMut
  * });
  */
 export function useSignInMutation(baseOptions?: Apollo.MutationHookOptions<SignInMutation, SignInMutationVariables>) {
-        return Apollo.useMutation<SignInMutation, SignInMutationVariables>(SignInDocument, baseOptions);
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SignInMutation, SignInMutationVariables>(SignInDocument, options);
       }
 export type SignInMutationHookResult = ReturnType<typeof useSignInMutation>;
 export type SignInMutationResult = Apollo.MutationResult<SignInMutation>;
 export type SignInMutationOptions = Apollo.BaseMutationOptions<SignInMutation, SignInMutationVariables>;
-export type QueryKeySpecifier = ('launches' | 'launch' | 'me' | QueryKeySpecifier)[];
-export type QueryFieldPolicy = {
-	launches?: FieldPolicy<any> | FieldReadFunction<any>,
-	launch?: FieldPolicy<any> | FieldReadFunction<any>,
-	me?: FieldPolicy<any> | FieldReadFunction<any>
+export type LaunchKeySpecifier = ('id' | 'details' | 'site' | 'mission' | 'rocket' | 'isBooked' | 'links' | LaunchKeySpecifier)[];
+export type LaunchFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	details?: FieldPolicy<any> | FieldReadFunction<any>,
+	site?: FieldPolicy<any> | FieldReadFunction<any>,
+	mission?: FieldPolicy<any> | FieldReadFunction<any>,
+	rocket?: FieldPolicy<any> | FieldReadFunction<any>,
+	isBooked?: FieldPolicy<any> | FieldReadFunction<any>,
+	links?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type LaunchConnectionKeySpecifier = ('cursor' | 'hasMore' | 'launches' | LaunchConnectionKeySpecifier)[];
+export type LaunchConnectionFieldPolicy = {
+	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
+	hasMore?: FieldPolicy<any> | FieldReadFunction<any>,
+	launches?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type LinksKeySpecifier = ('article' | 'video' | LinksKeySpecifier)[];
+export type LinksFieldPolicy = {
+	article?: FieldPolicy<any> | FieldReadFunction<any>,
+	video?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type MissionKeySpecifier = ('name' | 'missionPatch' | MissionKeySpecifier)[];
+export type MissionFieldPolicy = {
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	missionPatch?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type MutationKeySpecifier = ('bookTrip' | 'cancelTrip' | 'login' | 'signUp' | MutationKeySpecifier)[];
 export type MutationFieldPolicy = {
@@ -515,31 +562,23 @@ export type MutationFieldPolicy = {
 	login?: FieldPolicy<any> | FieldReadFunction<any>,
 	signUp?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type LaunchConnectionKeySpecifier = ('cursor' | 'hasMore' | 'launches' | LaunchConnectionKeySpecifier)[];
-export type LaunchConnectionFieldPolicy = {
-	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
-	hasMore?: FieldPolicy<any> | FieldReadFunction<any>,
-	launches?: FieldPolicy<any> | FieldReadFunction<any>
-};
-export type TripUpdateResponseKeySpecifier = ('success' | 'message' | 'launch' | TripUpdateResponseKeySpecifier)[];
-export type TripUpdateResponseFieldPolicy = {
-	success?: FieldPolicy<any> | FieldReadFunction<any>,
-	message?: FieldPolicy<any> | FieldReadFunction<any>,
-	launch?: FieldPolicy<any> | FieldReadFunction<any>
-};
-export type LaunchKeySpecifier = ('id' | 'site' | 'mission' | 'rocket' | 'isBooked' | LaunchKeySpecifier)[];
-export type LaunchFieldPolicy = {
-	id?: FieldPolicy<any> | FieldReadFunction<any>,
-	site?: FieldPolicy<any> | FieldReadFunction<any>,
-	mission?: FieldPolicy<any> | FieldReadFunction<any>,
-	rocket?: FieldPolicy<any> | FieldReadFunction<any>,
-	isBooked?: FieldPolicy<any> | FieldReadFunction<any>
+export type QueryKeySpecifier = ('launches' | 'launch' | 'me' | QueryKeySpecifier)[];
+export type QueryFieldPolicy = {
+	launches?: FieldPolicy<any> | FieldReadFunction<any>,
+	launch?: FieldPolicy<any> | FieldReadFunction<any>,
+	me?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type RocketKeySpecifier = ('id' | 'name' | 'type' | RocketKeySpecifier)[];
 export type RocketFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	type?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type TripUpdateResponseKeySpecifier = ('success' | 'message' | 'launch' | TripUpdateResponseKeySpecifier)[];
+export type TripUpdateResponseFieldPolicy = {
+	success?: FieldPolicy<any> | FieldReadFunction<any>,
+	message?: FieldPolicy<any> | FieldReadFunction<any>,
+	launch?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type UserKeySpecifier = ('id' | 'username' | 'email' | 'trips' | UserKeySpecifier)[];
 export type UserFieldPolicy = {
@@ -548,79 +587,41 @@ export type UserFieldPolicy = {
 	email?: FieldPolicy<any> | FieldReadFunction<any>,
 	trips?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type MissionKeySpecifier = ('largePatch' | 'missionPatch' | 'name' | 'smallPatch' | MissionKeySpecifier)[];
-export type MissionFieldPolicy = {
-	largePatch?: FieldPolicy<any> | FieldReadFunction<any>,
-	missionPatch?: FieldPolicy<any> | FieldReadFunction<any>,
-	name?: FieldPolicy<any> | FieldReadFunction<any>,
-	smallPatch?: FieldPolicy<any> | FieldReadFunction<any>
-};
 export type TypedTypePolicies = TypePolicies & {
-	Query?: {
-		keyFields?: false | QueryKeySpecifier | (() => undefined | QueryKeySpecifier),
-		queryType?: true,
-		mutationType?: true,
-		subscriptionType?: true,
-		fields?: QueryFieldPolicy,
-	},
-	Mutation?: {
-		keyFields?: false | MutationKeySpecifier | (() => undefined | MutationKeySpecifier),
-		queryType?: true,
-		mutationType?: true,
-		subscriptionType?: true,
-		fields?: MutationFieldPolicy,
-	},
-	LaunchConnection?: {
-		keyFields?: false | LaunchConnectionKeySpecifier | (() => undefined | LaunchConnectionKeySpecifier),
-		queryType?: true,
-		mutationType?: true,
-		subscriptionType?: true,
-		fields?: LaunchConnectionFieldPolicy,
-	},
-	TripUpdateResponse?: {
-		keyFields?: false | TripUpdateResponseKeySpecifier | (() => undefined | TripUpdateResponseKeySpecifier),
-		queryType?: true,
-		mutationType?: true,
-		subscriptionType?: true,
-		fields?: TripUpdateResponseFieldPolicy,
-	},
-	Launch?: {
+	Launch?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | LaunchKeySpecifier | (() => undefined | LaunchKeySpecifier),
-		queryType?: true,
-		mutationType?: true,
-		subscriptionType?: true,
 		fields?: LaunchFieldPolicy,
 	},
-	Rocket?: {
+	LaunchConnection?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | LaunchConnectionKeySpecifier | (() => undefined | LaunchConnectionKeySpecifier),
+		fields?: LaunchConnectionFieldPolicy,
+	},
+	Links?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | LinksKeySpecifier | (() => undefined | LinksKeySpecifier),
+		fields?: LinksFieldPolicy,
+	},
+	Mission?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | MissionKeySpecifier | (() => undefined | MissionKeySpecifier),
+		fields?: MissionFieldPolicy,
+	},
+	Mutation?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | MutationKeySpecifier | (() => undefined | MutationKeySpecifier),
+		fields?: MutationFieldPolicy,
+	},
+	Query?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | QueryKeySpecifier | (() => undefined | QueryKeySpecifier),
+		fields?: QueryFieldPolicy,
+	},
+	Rocket?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | RocketKeySpecifier | (() => undefined | RocketKeySpecifier),
-		queryType?: true,
-		mutationType?: true,
-		subscriptionType?: true,
 		fields?: RocketFieldPolicy,
 	},
-	User?: {
-		keyFields?: false | UserKeySpecifier | (() => undefined | UserKeySpecifier),
-		queryType?: true,
-		mutationType?: true,
-		subscriptionType?: true,
-		fields?: UserFieldPolicy,
+	TripUpdateResponse?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | TripUpdateResponseKeySpecifier | (() => undefined | TripUpdateResponseKeySpecifier),
+		fields?: TripUpdateResponseFieldPolicy,
 	},
-	Mission?: {
-		keyFields?: false | MissionKeySpecifier | (() => undefined | MissionKeySpecifier),
-		queryType?: true,
-		mutationType?: true,
-		subscriptionType?: true,
-		fields?: MissionFieldPolicy,
+	User?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | UserKeySpecifier | (() => undefined | UserKeySpecifier),
+		fields?: UserFieldPolicy,
 	}
 };
-
-      export interface PossibleTypesResultData {
-        possibleTypes: {
-          [key: string]: string[]
-        }
-      }
-      const result: PossibleTypesResultData = {
-  "possibleTypes": {}
-};
-      export default result;
-    

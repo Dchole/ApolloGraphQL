@@ -1,73 +1,74 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import Box from "@material-ui/core/Box";
-import Grid from "@material-ui/core/Grid";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Container from "@material-ui/core/Container";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import BookIcon from "@material-ui/icons/Book";
+import { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
+import Box from "@material-ui/core/Box"
+import Grid from "@material-ui/core/Grid"
+import CircularProgress from "@material-ui/core/CircularProgress"
+import Container from "@material-ui/core/Container"
+import Typography from "@material-ui/core/Typography"
+import Button from "@material-ui/core/Button"
+import Link from "@material-ui/core/Link"
+import BookIcon from "@material-ui/icons/Book"
+import Skeleton from "@material-ui/lab/Skeleton"
 import {
   useBookTripMutation,
   useGetLaunchDetailsQuery,
   useCancelTripMutation
-} from "../generated/graphql";
-import useDetailStyles from "../styles/detail-styles";
-import Feedback from "../components/Feedback";
-import replacementImg from "../assets/images/badge-2.png";
-import useDesktopView from "../hooks/useDesktopView";
-import Skeleton from "@material-ui/lab/Skeleton";
-import Error from "../components/Error";
+} from "../generated/graphql"
+import Feedback from "../components/Feedback"
+import replacementImg from "../assets/images/badge-2.png"
+import useDesktopView from "../hooks/useDesktopView"
+import useDetailStyles from "../styles/detail-styles"
+import Error from "../components/Error"
 
 const LaunchDetails = () => {
-  const { id } = useParams<{ id: string }>();
-  const [open, setOpen] = useState(false);
-  const [booked, setBooked] = useState(false);
-  const [cancelled, setCancelled] = useState(false);
-  const [message, setMessage] = useState("");
-  const classes = useDetailStyles(booked);
-  const desktopView = useDesktopView();
+  const { id } = useParams<{ id: string }>()
+  const [open, setOpen] = useState(false)
+  const [booked, setBooked] = useState(false)
+  const [cancelled, setCancelled] = useState(false)
+  const [message, setMessage] = useState("")
+  const classes = useDetailStyles(booked)
+  const desktopView = useDesktopView()
 
   const { data, error, refetch, networkStatus } = useGetLaunchDetailsQuery({
     variables: { id },
     notifyOnNetworkStatusChange: true
-  });
+  })
 
-  const [bookTrip, { loading: bookLoading }] = useBookTripMutation();
-  const [cancelTrip, { loading: cancelLoading }] = useCancelTripMutation();
+  const [bookTrip, { loading: bookLoading }] = useBookTripMutation()
+  const [cancelTrip, { loading: cancelLoading }] = useCancelTripMutation()
 
-  const mutationLoading = bookLoading || cancelLoading;
+  const mutationLoading = bookLoading || cancelLoading
 
   useEffect(() => {
-    data && setBooked(data.launch.isBooked);
-  }, [data]);
+    data && setBooked(data.launch.isBooked)
+  }, [data])
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
 
   const handleBookTrip = async () => {
     try {
-      const { data } = await bookTrip({ variables: { launchId: id } });
-      data && setBooked(data.bookTrip.success);
-      setCancelled(!data?.bookTrip.success);
-      setMessage(`${data?.bookTrip.message}`);
-      handleOpen();
+      const { data } = await bookTrip({ variables: { launchId: id } })
+      data && setBooked(data.bookTrip.success)
+      setCancelled(!data?.bookTrip.success)
+      setMessage(`${data?.bookTrip.message}`)
+      handleOpen()
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
 
   const handleCancelTrip = async () => {
     try {
-      const { data } = await cancelTrip({ variables: { launchId: id } });
-      data && setCancelled(data.cancelTrip.success);
-      setBooked(!data?.cancelTrip.success);
-      setMessage(`${data?.cancelTrip.message}`);
-      handleOpen();
+      const { data } = await cancelTrip({ variables: { launchId: id } })
+      data && setCancelled(data.cancelTrip.success)
+      setBooked(!data?.cancelTrip.success)
+      setMessage(`${data?.cancelTrip.message}`)
+      handleOpen()
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
 
   if (error) {
     return (
@@ -77,7 +78,7 @@ const LaunchDetails = () => {
         refetch={refetch}
         error={error}
       />
-    );
+    )
   }
 
   return (
@@ -131,6 +132,20 @@ const LaunchDetails = () => {
                   <Skeleton />
                 )}
               </Typography>
+              <br />
+              <Typography align={desktopView ? "right" : "left"}>
+                {data?.launch.details}
+              </Typography>
+            </div>
+            <div className={classes.links}>
+              {data?.launch.links.article && (
+                <Link href={data.launch.links.article}>
+                  Read Launch Article
+                </Link>
+              )}
+              {data?.launch.links.article && (
+                <Link href={data.launch.links.article}>Watch Launch Video</Link>
+              )}
             </div>
             {data ? (
               <div className={classes.buttonWrapper}>
@@ -171,7 +186,7 @@ const LaunchDetails = () => {
         handleClose={handleClose}
       />
     </Container>
-  );
-};
+  )
+}
 
-export default LaunchDetails;
+export default LaunchDetails

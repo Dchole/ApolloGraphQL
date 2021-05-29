@@ -2,6 +2,7 @@ query GetLaunchDetails($id: ID!) {
   launch(id: $id) {
     id
     site
+    details
     mission {
       name
       missionPatch
@@ -10,6 +11,10 @@ query GetLaunchDetails($id: ID!) {
       id
       name
       type
+    }
+    links {
+      article
+      video
     }
     isBooked
   }
