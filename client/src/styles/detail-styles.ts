@@ -3,12 +3,7 @@ import { createStyles, makeStyles } from "@material-ui/core/styles"
 const useDetailStyles = makeStyles(theme =>
   createStyles({
     root: {
-      margin: theme.spacing(11, "auto", 8),
-
-      [theme.breakpoints.up("sm")]: {
-        display: "grid",
-        placeItem: "center"
-      }
+      margin: theme.spacing(11, "auto", 8)
     },
     details: {
       display: "flex",

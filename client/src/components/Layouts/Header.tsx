@@ -1,3 +1,4 @@
+import clsx from "clsx"
 import React, { useEffect, useState } from "react"
 import { Link, useHistory, useRouteMatch } from "react-router-dom"
 import AppBar from "@material-ui/core/AppBar"
@@ -51,12 +52,12 @@ const Header: React.FC<IHeaderProps> = ({ logout }) => {
 
   return (
     <AppBar position="fixed" variant="outlined" className={classes.root}>
-      <Toolbar className={classes.toolbar}>
-        <IconButton
-          aria-label="menu"
-          onClick={goBack}
-          className={classes.arrowBackBtn}
-        >
+      <Toolbar
+        className={
+          show ? clsx(classes.toolbar, classes.clearPadding) : classes.toolbar
+        }
+      >
+        <IconButton aria-label="menu" onClick={goBack}>
           <ArrowBackIcon />
         </IconButton>
         <Grid

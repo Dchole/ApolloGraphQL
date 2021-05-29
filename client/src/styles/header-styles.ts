@@ -1,8 +1,8 @@
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
 
 interface IProps {
-  match: boolean;
-  show: boolean;
+  match: boolean
+  show: boolean
 }
 
 const useHeaderStyles = makeStyles((theme: Theme) =>
@@ -42,13 +42,13 @@ const useHeaderStyles = makeStyles((theme: Theme) =>
     button: {
       padding: theme.spacing(1)
     },
-    arrowBackBtn: {
+    clearPadding: {
       paddingLeft: 0
     },
     bookedIcon: {
       margin: "auto"
     }
   })
-);
+)
 
-export default useHeaderStyles;
+export default useHeaderStyles

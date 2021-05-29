@@ -33,8 +33,12 @@ const LaunchPage = () => {
 
   return (
     <Container maxWidth="md" className={classes.root}>
-      <Grid container direction={desktopView ? "row" : "column-reverse"}>
-        <Grid component="section" xs={12} md={6} item>
+      <Grid
+        container
+        direction={desktopView ? "row" : "column-reverse"}
+        spacing={desktopView ? 10 : undefined}
+      >
+        <Grid component="section" xs={12} sm={6} item>
           {data && (
             <LaunchDetails
               mission={data.launch.mission}
@@ -49,7 +53,7 @@ const LaunchPage = () => {
             </div>
           )}
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} sm={6}>
           {data ? (
             <img
               src={data.launch.mission.missionPatch || replacementImg}
