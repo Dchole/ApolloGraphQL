@@ -6,7 +6,7 @@ import LaunchDetails from "../components/LaunchDetails"
 import replacementImg from "../assets/images/badge-2.png"
 import useDesktopView from "../hooks/useDesktopView"
 import Error from "../components/Error"
-import BookTripButton from "../components/LaunchDetails/BookTripButtont"
+import BookTripButton from "../components/LaunchDetails/BookTripButton"
 import useDetailStyles from "../styles/detail-styles"
 import { useGetLaunchDetailsQuery } from "../generated/graphql"
 

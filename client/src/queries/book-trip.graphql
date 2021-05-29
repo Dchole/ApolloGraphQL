@@ -4,6 +4,9 @@ mutation BookTrip($launchId: ID!) {
     message
     launch {
       id
+      mission {
+        name
+      }
       isBooked
     }
   }

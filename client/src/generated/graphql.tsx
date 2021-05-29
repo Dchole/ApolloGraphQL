@@ -140,6 +140,10 @@ export type BookTripMutation = (
     & { launch: (
       { __typename?: 'Launch' }
       & Pick<Launch, 'id' | 'isBooked'>
+      & { mission: (
+        { __typename?: 'Mission' }
+        & Pick<Mission, 'name'>
+      ) }
     ) }
   ) }
 );
@@ -157,6 +161,10 @@ export type CancelTripMutation = (
     & { launch: (
       { __typename?: 'Launch' }
       & Pick<Launch, 'id' | 'isBooked'>
+      & { mission: (
+        { __typename?: 'Mission' }
+        & Pick<Mission, 'name'>
+      ) }
     ) }
   ) }
 );
@@ -211,6 +219,23 @@ export type GetUserQuery = (
   & { me: (
     { __typename?: 'User' }
     & Pick<User, 'username'>
+  ) }
+);
+
+export type IsLaunchBookedQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type IsLaunchBookedQuery = (
+  { __typename?: 'Query' }
+  & { launch: (
+    { __typename?: 'Launch' }
+    & Pick<Launch, 'id' | 'isBooked'>
+    & { mission: (
+      { __typename?: 'Mission' }
+      & Pick<Mission, 'name'>
+    ) }
   ) }
 );
 
@@ -269,6 +294,9 @@ export const BookTripDocument = gql`
     message
     launch {
       id
+      mission {
+        name
+      }
       isBooked
     }
   }
@@ -308,6 +336,9 @@ export const CancelTripDocument = gql`
     launch {
       id
       isBooked
+      mission {
+        name
+      }
     }
   }
 }
@@ -464,6 +495,45 @@ export function useGetUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ge
 export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
 export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
 export type GetUserQueryResult = Apollo.QueryResult<GetUserQuery, GetUserQueryVariables>;
+export const IsLaunchBookedDocument = gql`
+    query isLaunchBooked($id: ID!) {
+  launch(id: $id) {
+    id
+    mission {
+      name
+    }
+    isBooked
+  }
+}
+    `;
+
+/**
+ * __useIsLaunchBookedQuery__
+ *
+ * To run a query within a React component, call `useIsLaunchBookedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useIsLaunchBookedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useIsLaunchBookedQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useIsLaunchBookedQuery(baseOptions: Apollo.QueryHookOptions<IsLaunchBookedQuery, IsLaunchBookedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<IsLaunchBookedQuery, IsLaunchBookedQueryVariables>(IsLaunchBookedDocument, options);
+      }
+export function useIsLaunchBookedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IsLaunchBookedQuery, IsLaunchBookedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<IsLaunchBookedQuery, IsLaunchBookedQueryVariables>(IsLaunchBookedDocument, options);
+        }
+export type IsLaunchBookedQueryHookResult = ReturnType<typeof useIsLaunchBookedQuery>;
+export type IsLaunchBookedLazyQueryHookResult = ReturnType<typeof useIsLaunchBookedLazyQuery>;
+export type IsLaunchBookedQueryResult = Apollo.QueryResult<IsLaunchBookedQuery, IsLaunchBookedQueryVariables>;
 export const RegisterDocument = gql`
     mutation Register($username: String!, $email: String!, $password: String!) {
   signUp(username: $username, email: $email, password: $password)
