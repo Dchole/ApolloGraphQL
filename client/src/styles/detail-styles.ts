@@ -1,52 +1,30 @@
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles"
+import { createStyles, makeStyles } from "@material-ui/core/styles"
 
-const useDetailStyles = makeStyles((theme: Theme) =>
+const useDetailStyles = makeStyles(theme =>
   createStyles({
-    img: {
-      marginBottom: theme.spacing(3),
-      width: "100%"
-    },
+    root: {
+      margin: theme.spacing(11, "auto", 8),
 
-    header: {
-      [theme.breakpoints.up("md")]: {
+      [theme.breakpoints.up("sm")]: {
         display: "grid",
-        gridColumnGap: theme.spacing(2),
-        gridTemplateRows: "repeat(3, 1fr)",
-        gridTemplateColumns: "repeat(4, 1fr)",
-        gridTemplateAreas: ` 
-      "img img heading heading"
-      "img img subheading subheading"
-      "img img . book"
-      `,
-
-        "& > span:first-child": {
-          gridArea: "img"
-        },
-        "& > span:nth-child(2)": {
-          gridArea: "heading"
-        },
-        "& > span:nth-child(3)": {
-          gridArea: "subheading"
-        },
-        "& > span:last-child": {
-          gridArea: "book"
-        }
+        placeItem: "center"
       }
+    },
+    details: {
+      display: "flex",
+      flexDirection: "column",
+      gap: theme.spacing(3)
     },
     buttonWrapper: {
       display: "flex",
       justifyContent: "flex-end",
       width: "100%"
     },
-    button: booked => ({
-      margin: theme.spacing(2, 0, "auto", "auto"),
-      backgroundColor: booked
-        ? theme.palette.buttonSecondary.main
-        : theme.palette.primary.main
-    }),
+    button: {
+      margin: theme.spacing(2, 0, "auto", "auto")
+    },
     links: {
       display: "flex",
-      justifyContent: "flex-end",
       gap: theme.spacing(2),
 
       "& a": {
