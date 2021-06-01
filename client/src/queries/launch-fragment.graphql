@@ -1,11 +1,9 @@
 fragment LaunchQueryPart on Launch {
   id
+  name
   rocket {
     id
     name
   }
-  mission {
-    name
-    missionPatch(size: SMALL)
-  }
+  patch(size: SMALL)
 }

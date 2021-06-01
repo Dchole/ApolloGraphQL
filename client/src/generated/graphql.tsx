@@ -15,15 +15,25 @@ export type Scalars = {
   Float: number;
 };
 
+export enum EPatchSize {
+  Small = 'SMALL',
+  Large = 'LARGE'
+}
+
 export type Launch = {
   __typename?: 'Launch';
   id: Scalars['ID'];
+  name: Scalars['String'];
   details?: Maybe<Scalars['String']>;
-  site: Scalars['String'];
-  mission: Mission;
+  patch?: Maybe<Scalars['String']>;
   rocket: Rocket;
   isBooked: Scalars['Boolean'];
   links: Links;
+};
+
+
+export type LaunchPatchArgs = {
+  size?: Maybe<EPatchSize>;
 };
 
 export type LaunchConnection = {
@@ -37,17 +47,6 @@ export type Links = {
   __typename?: 'Links';
   article?: Maybe<Scalars['String']>;
   video?: Maybe<Scalars['String']>;
-};
-
-export type Mission = {
-  __typename?: 'Mission';
-  name: Scalars['String'];
-  missionPatch?: Maybe<Scalars['String']>;
-};
-
-
-export type MissionMissionPatchArgs = {
-  size?: Maybe<PatchSize>;
 };
 
 export type Mutation = {
@@ -80,11 +79,6 @@ export type MutationSignUpArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
 };
-
-export enum PatchSize {
-  Small = 'SMALL',
-  Large = 'LARGE'
-}
 
 export type Query = {
   __typename?: 'Query';
@@ -140,10 +134,6 @@ export type BookTripMutation = (
     & { launch: (
       { __typename?: 'Launch' }
       & Pick<Launch, 'id' | 'isBooked'>
-      & { mission: (
-        { __typename?: 'Mission' }
-        & Pick<Mission, 'name'>
-      ) }
     ) }
   ) }
 );
@@ -161,10 +151,6 @@ export type CancelTripMutation = (
     & { launch: (
       { __typename?: 'Launch' }
       & Pick<Launch, 'id' | 'isBooked'>
-      & { mission: (
-        { __typename?: 'Mission' }
-        & Pick<Mission, 'name'>
-      ) }
     ) }
   ) }
 );
@@ -178,11 +164,8 @@ export type GetLaunchDetailsQuery = (
   { __typename?: 'Query' }
   & { launch: (
     { __typename?: 'Launch' }
-    & Pick<Launch, 'id' | 'site' | 'details' | 'isBooked'>
-    & { mission: (
-      { __typename?: 'Mission' }
-      & Pick<Mission, 'name' | 'missionPatch'>
-    ), rocket: (
+    & Pick<Launch, 'id' | 'name' | 'details' | 'patch' | 'isBooked'>
+    & { rocket: (
       { __typename?: 'Rocket' }
       & Pick<Rocket, 'id' | 'name' | 'type'>
     ), links: (
@@ -231,23 +214,16 @@ export type IsLaunchBookedQuery = (
   { __typename?: 'Query' }
   & { launch: (
     { __typename?: 'Launch' }
-    & Pick<Launch, 'id' | 'isBooked'>
-    & { mission: (
-      { __typename?: 'Mission' }
-      & Pick<Mission, 'name'>
-    ) }
+    & Pick<Launch, 'id' | 'name' | 'isBooked'>
   ) }
 );
 
 export type LaunchQueryPartFragment = (
   { __typename?: 'Launch' }
-  & Pick<Launch, 'id'>
+  & Pick<Launch, 'id' | 'name' | 'patch'>
   & { rocket: (
     { __typename?: 'Rocket' }
     & Pick<Rocket, 'id' | 'name'>
-  ), mission: (
-    { __typename?: 'Mission' }
-    & Pick<Mission, 'name' | 'missionPatch'>
   ) }
 );
 
@@ -277,14 +253,12 @@ export type SignInMutation = (
 export const LaunchQueryPartFragmentDoc = gql`
     fragment LaunchQueryPart on Launch {
   id
+  name
   rocket {
     id
     name
   }
-  mission {
-    name
-    missionPatch(size: SMALL)
-  }
+  patch(size: SMALL)
 }
     `;
 export const BookTripDocument = gql`
@@ -294,9 +268,6 @@ export const BookTripDocument = gql`
     message
     launch {
       id
-      mission {
-        name
-      }
       isBooked
     }
   }
@@ -336,9 +307,6 @@ export const CancelTripDocument = gql`
     launch {
       id
       isBooked
-      mission {
-        name
-      }
     }
   }
 }
@@ -373,17 +341,14 @@ export const GetLaunchDetailsDocument = gql`
     query GetLaunchDetails($id: ID!) {
   launch(id: $id) {
     id
-    site
+    name
     details
-    mission {
-      name
-      missionPatch
-    }
     rocket {
       id
       name
       type
     }
+    patch(size: LARGE)
     links {
       article
       video
@@ -499,9 +464,7 @@ export const IsLaunchBookedDocument = gql`
     query isLaunchBooked($id: ID!) {
   launch(id: $id) {
     id
-    mission {
-      name
-    }
+    name
     isBooked
   }
 }
@@ -599,12 +562,12 @@ export function useSignInMutation(baseOptions?: Apollo.MutationHookOptions<SignI
 export type SignInMutationHookResult = ReturnType<typeof useSignInMutation>;
 export type SignInMutationResult = Apollo.MutationResult<SignInMutation>;
 export type SignInMutationOptions = Apollo.BaseMutationOptions<SignInMutation, SignInMutationVariables>;
-export type LaunchKeySpecifier = ('id' | 'details' | 'site' | 'mission' | 'rocket' | 'isBooked' | 'links' | LaunchKeySpecifier)[];
+export type LaunchKeySpecifier = ('id' | 'name' | 'details' | 'patch' | 'rocket' | 'isBooked' | 'links' | LaunchKeySpecifier)[];
 export type LaunchFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	details?: FieldPolicy<any> | FieldReadFunction<any>,
-	site?: FieldPolicy<any> | FieldReadFunction<any>,
-	mission?: FieldPolicy<any> | FieldReadFunction<any>,
+	patch?: FieldPolicy<any> | FieldReadFunction<any>,
 	rocket?: FieldPolicy<any> | FieldReadFunction<any>,
 	isBooked?: FieldPolicy<any> | FieldReadFunction<any>,
 	links?: FieldPolicy<any> | FieldReadFunction<any>
@@ -619,11 +582,6 @@ export type LinksKeySpecifier = ('article' | 'video' | LinksKeySpecifier)[];
 export type LinksFieldPolicy = {
 	article?: FieldPolicy<any> | FieldReadFunction<any>,
 	video?: FieldPolicy<any> | FieldReadFunction<any>
-};
-export type MissionKeySpecifier = ('name' | 'missionPatch' | MissionKeySpecifier)[];
-export type MissionFieldPolicy = {
-	name?: FieldPolicy<any> | FieldReadFunction<any>,
-	missionPatch?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type MutationKeySpecifier = ('bookTrip' | 'cancelTrip' | 'login' | 'signUp' | MutationKeySpecifier)[];
 export type MutationFieldPolicy = {
@@ -669,10 +627,6 @@ export type TypedTypePolicies = TypePolicies & {
 	Links?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | LinksKeySpecifier | (() => undefined | LinksKeySpecifier),
 		fields?: LinksFieldPolicy,
-	},
-	Mission?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | MissionKeySpecifier | (() => undefined | MissionKeySpecifier),
-		fields?: MissionFieldPolicy,
 	},
 	Mutation?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | MutationKeySpecifier | (() => undefined | MutationKeySpecifier),

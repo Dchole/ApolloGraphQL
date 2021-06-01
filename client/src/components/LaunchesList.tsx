@@ -85,10 +85,10 @@ const LaunchesList: React.FC<ILaunchesListProps> = ({
       <LoadLaunches loading={loading} />
       {data?.launches.launches.map(launch => (
         <Launch
-          key={launch.id + launch.mission.name}
-          id={launch.id + launch.mission.name}
-          missionName={launch.mission.name}
-          missionPatch={launch.mission.missionPatch}
+          key={launch.id}
+          id={launch.id}
+          missionName={launch.name}
+          missionPatch={launch.patch}
           rocketName={launch.rocket.name}
         />
       ))}

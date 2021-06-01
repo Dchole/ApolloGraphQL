@@ -1,4 +1,4 @@
-import { QueryResolvers } from "../generated/graphql"
+import { Launch, QueryResolvers } from "../generated/graphql"
 import { paginateResults } from "../utils"
 import { TContext } from "./resolvers"
 
@@ -8,35 +8,30 @@ const Query: QueryResolvers<TContext> = {
   },
   launches: async (
     _,
-    { pageSize = 20, after, isBooked },
+    { limit, page, isBooked },
     { dataSources: { userAPI, launchAPI } }
   ) => {
-    let allLaunches = await launchAPI.getAllLaunches()
-    const bookedLaunchesIds = await userAPI.getLaunchIdsByUser()
+    const bookedLaunchesIdsPromise = userAPI.getLaunchIdsByUser()
+    const launchesPromise: Promise<Launch[]> = launchAPI.getAllLaunches(
+      limit,
+      page
+    )
 
-    allLaunches.reverse()
+    const [allLaunches, bookedLaunchesIds] = await Promise.all([
+      launchesPromise,
+      bookedLaunchesIdsPromise
+    ])
 
     const filteredLaunches =
       isBooked &&
       allLaunches.filter(launch => bookedLaunchesIds.includes(launch.id))
 
-    if (filteredLaunches) {
-      allLaunches = filteredLaunches
-    }
-
-    const launches = paginateResults(
-      Number(pageSize),
-      allLaunches,
-      after || undefined
-    )
+    const launches = filteredLaunches || allLaunches
+    const hasMore = await launchAPI.hasMore(launches.map(launch => launch.name))
 
     return {
       launches,
-      cursor: launches.length ? Number(launches[launches.length - 1].id) : null,
-      hasMore: launches.length
-        ? launches[launches.length - 1].id !==
-          allLaunches[allLaunches.length - 1].id
-        : false
+      hasMore
     }
   },
   launch: (_parent, { id }, { dataSources: { launchAPI } }) =>

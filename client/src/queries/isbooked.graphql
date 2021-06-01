@@ -1,9 +1,7 @@
 query isLaunchBooked($id: ID!) {
   launch(id: $id) {
     id
-    mission {
-      name
-    }
+    name
     isBooked
   }
 }

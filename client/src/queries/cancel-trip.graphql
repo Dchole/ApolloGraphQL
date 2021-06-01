@@ -5,9 +5,6 @@ mutation CancelTrip($launchId: ID!) {
     launch {
       id
       isBooked
-      mission {
-        name
-      }
     }
   }
 }

@@ -21,20 +21,29 @@ export type Scalars = {
 
 
 
+export enum EPatchSize {
+  Small = 'SMALL',
+  Large = 'LARGE'
+}
+
 export type Launch = {
   __typename?: 'Launch';
   id: Scalars['ID'];
+  name: Scalars['String'];
   details?: Maybe<Scalars['String']>;
-  site: Scalars['String'];
-  mission: Mission;
+  patch?: Maybe<Scalars['String']>;
   rocket: Rocket;
   isBooked: Scalars['Boolean'];
   links: Links;
 };
 
+
+export type LaunchPatchArgs = {
+  size?: Maybe<EPatchSize>;
+};
+
 export type LaunchConnection = {
   __typename?: 'LaunchConnection';
-  cursor?: Maybe<Scalars['Int']>;
   hasMore: Scalars['Boolean'];
   launches: Array<Launch>;
 };
@@ -43,17 +52,6 @@ export type Links = {
   __typename?: 'Links';
   article?: Maybe<Scalars['String']>;
   video?: Maybe<Scalars['String']>;
-};
-
-export type Mission = {
-  __typename?: 'Mission';
-  name: Scalars['String'];
-  missionPatch?: Maybe<Scalars['String']>;
-};
-
-
-export type MissionMissionPatchArgs = {
-  size?: Maybe<PatchSize>;
 };
 
 export type Mutation = {
@@ -87,11 +85,6 @@ export type MutationSignUpArgs = {
   password: Scalars['String'];
 };
 
-export enum PatchSize {
-  Small = 'SMALL',
-  Large = 'LARGE'
-}
-
 export type Query = {
   __typename?: 'Query';
   launches: LaunchConnection;
@@ -101,8 +94,8 @@ export type Query = {
 
 
 export type QueryLaunchesArgs = {
-  pageSize?: Maybe<Scalars['Int']>;
-  after?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
   isBooked?: Maybe<Scalars['Boolean']>;
 };
 
@@ -216,17 +209,16 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  EPatchSize: EPatchSize;
   Launch: ResolverTypeWrapper<Launch>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   String: ResolverTypeWrapper<Scalars['String']>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   LaunchConnection: ResolverTypeWrapper<LaunchConnection>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
   Links: ResolverTypeWrapper<Links>;
-  Mission: ResolverTypeWrapper<Mission>;
   Mutation: ResolverTypeWrapper<{}>;
-  PatchSize: PatchSize;
   Query: ResolverTypeWrapper<{}>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   Rocket: ResolverTypeWrapper<Rocket>;
   TripUpdateResponse: ResolverTypeWrapper<TripUpdateResponse>;
   User: ResolverTypeWrapper<User>;
@@ -240,11 +232,10 @@ export type ResolversParentTypes = {
   String: Scalars['String'];
   Boolean: Scalars['Boolean'];
   LaunchConnection: LaunchConnection;
-  Int: Scalars['Int'];
   Links: Links;
-  Mission: Mission;
   Mutation: {};
   Query: {};
+  Int: Scalars['Int'];
   Rocket: Rocket;
   TripUpdateResponse: TripUpdateResponse;
   User: User;
@@ -288,9 +279,9 @@ export type MapDirectiveResolver<Result, Parent, ContextType = any, Args = MapDi
 
 export type LaunchResolvers<ContextType = any, ParentType extends ResolversParentTypes['Launch'] = ResolversParentTypes['Launch']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   details?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  site?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  mission?: Resolver<ResolversTypes['Mission'], ParentType, ContextType>;
+  patch?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<LaunchPatchArgs, never>>;
   rocket?: Resolver<ResolversTypes['Rocket'], ParentType, ContextType>;
   isBooked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   links?: Resolver<ResolversTypes['Links'], ParentType, ContextType>;
@@ -298,7 +289,6 @@ export type LaunchResolvers<ContextType = any, ParentType extends ResolversParen
 };
 
 export type LaunchConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['LaunchConnection'] = ResolversParentTypes['LaunchConnection']> = {
-  cursor?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   hasMore?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   launches?: Resolver<Array<ResolversTypes['Launch']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -307,12 +297,6 @@ export type LaunchConnectionResolvers<ContextType = any, ParentType extends Reso
 export type LinksResolvers<ContextType = any, ParentType extends ResolversParentTypes['Links'] = ResolversParentTypes['Links']> = {
   article?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   video?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type MissionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mission'] = ResolversParentTypes['Mission']> = {
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  missionPatch?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<MissionMissionPatchArgs, never>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -355,7 +339,6 @@ export type Resolvers<ContextType = any> = {
   Launch?: LaunchResolvers<ContextType>;
   LaunchConnection?: LaunchConnectionResolvers<ContextType>;
   Links?: LinksResolvers<ContextType>;
-  Mission?: MissionResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Rocket?: RocketResolvers<ContextType>;

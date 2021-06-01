@@ -1,17 +1,14 @@
 query GetLaunchDetails($id: ID!) {
   launch(id: $id) {
     id
-    site
+    name
     details
-    mission {
-      name
-      missionPatch
-    }
     rocket {
       id
       name
       type
     }
+    patch(size: LARGE)
     links {
       article
       video

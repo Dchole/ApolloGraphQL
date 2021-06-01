@@ -41,7 +41,7 @@ const LaunchPage = () => {
         <Grid component="section" xs={12} sm={6} item>
           {data && (
             <LaunchDetails
-              mission={data.launch.mission}
+              name={data.launch.name}
               rocket={data.launch.rocket}
               details={data.launch.details}
               links={data.launch.links}
@@ -56,8 +56,8 @@ const LaunchPage = () => {
         <Grid item xs={12} sm={6}>
           {data ? (
             <img
-              src={data.launch.mission.missionPatch || replacementImg}
-              alt={data.launch.mission.name}
+              src={data.launch.patch || replacementImg}
+              alt={data.launch.name}
               width={desktopView ? "420" : "200"}
               height={desktopView ? "420" : "200"}
             />

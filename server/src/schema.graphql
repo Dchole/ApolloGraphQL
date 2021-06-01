@@ -1,5 +1,5 @@
 type Query {
-  launches(pageSize: Int, after: Int, isBooked: Boolean): LaunchConnection!
+  launches(limit: Int, page: Int, isBooked: Boolean): LaunchConnection!
   launch(id: ID!): Launch!
   me: User!
 }
@@ -12,7 +12,6 @@ type Mutation {
 }
 
 type LaunchConnection {
-  cursor: Int
   hasMore: Boolean!
   launches: [Launch!]!
 }
@@ -25,9 +24,9 @@ type TripUpdateResponse {
 
 type Launch {
   id: ID!
+  name: String!
   details: String
-  site: String!
-  mission: Mission!
+  patch(size: EPatchSize): String
   rocket: Rocket!
   isBooked: Boolean!
   links: Links!
@@ -51,12 +50,7 @@ type User {
   trips: [Launch!]!
 }
 
-type Mission {
-  name: String!
-  missionPatch(size: PatchSize): String
-}
-
-enum PatchSize {
+enum EPatchSize {
   SMALL
   LARGE
 }

@@ -4,10 +4,10 @@ import useDesktopView from "../../hooks/useDesktopView"
 import useDetailStyles from "../../styles/detail-styles"
 import { Launch } from "../../generated/graphql"
 
-type TLaunchDetails = Pick<Launch, "mission" | "rocket" | "details" | "links">
+type TLaunchDetails = Pick<Launch, "name" | "rocket" | "details" | "links">
 
 const LaunchDetails: React.FC<TLaunchDetails> = ({
-  mission,
+  name,
   rocket,
   details,
   links
@@ -19,7 +19,7 @@ const LaunchDetails: React.FC<TLaunchDetails> = ({
     <section className={classes.details}>
       <div className="name">
         <Typography component="h1" variant={desktopView ? "h3" : "h4"}>
-          {mission.name}
+          {name}
         </Typography>
         <br />
         <Typography component="h2" variant="h5">
