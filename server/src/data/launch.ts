@@ -8,8 +8,6 @@ class LaunchAPI extends RESTDataSource {
   }
 
   launchReducer(launch: { [key: string]: any }): any {
-    console.log(launch.static_fire_date_unix)
-
     return {
       id: launch.id,
       name: launch.name,
@@ -31,23 +29,21 @@ class LaunchAPI extends RESTDataSource {
   }
 
   async hasMore(launches: string[]) {
-    interface IDoc {
-      id: string
-      name: string
-    }
-
-    const { docs }: { docs: IDoc[] } = await this.post("launches/query", {
-      query: { name: { $in: launches } },
-      options: {
-        select: "name",
-        pagination: false
+    const { docs }: { docs: { id: string }[] } = await this.post(
+      "launches/query",
+      {
+        query: { _id: { $in: launches } },
+        options: {
+          select: "name",
+          pagination: false
+        }
       }
-    })
+    )
 
     const cursor = launches[launches.length - 1]
 
     const indexOfCursor = docs.findIndex(
-      launch => launch.name.toString() === cursor.toString()
+      launch => launch.id.toString() === cursor.toString()
     )
 
     return indexOfCursor + 1 < docs.length
@@ -79,8 +75,21 @@ class LaunchAPI extends RESTDataSource {
   }
 
   async getLaunchById(launchId: string) {
-    const [launch] = await this.get("launches", { id: launchId })
-    return this.launchReducer(launch)
+    const { docs } = await this.post("launches/query", {
+      query: { _id: launchId },
+      options: {
+        select: "name details links patch",
+        populate: {
+          path: "rocket",
+          select: {
+            name: 1,
+            type: 1
+          }
+        }
+      }
+    })
+
+    return this.launchReducer(docs[0])
   }
 
   getLaunchesByIds(launchIds: string[]) {

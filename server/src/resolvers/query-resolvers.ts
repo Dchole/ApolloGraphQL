@@ -27,7 +27,7 @@ const Query: QueryResolvers<TContext> = {
       allLaunches.filter(launch => bookedLaunchesIds.includes(launch.id))
 
     const launches = filteredLaunches || allLaunches
-    const hasMore = await launchAPI.hasMore(launches.map(launch => launch.name))
+    const hasMore = await launchAPI.hasMore(launches.map(launch => launch.id))
 
     return {
       launches,
