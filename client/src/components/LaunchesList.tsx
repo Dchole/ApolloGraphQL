@@ -19,18 +19,22 @@ const LaunchesList: React.FC<ILaunchesListProps> = ({
   isBooked,
   onAccountPage
 }) => {
-  const variables = { pageSize: 5, after: null, isBooked }
+  const variables = { limit: 5, page: null, isBooked }
 
   const desktopView = useDesktopView()
   const classes = useLaunchesStyles(desktopView)
   const [loadMore, setLoadMore] = useState(false)
+  const [page, setPage] = useState(1)
   const { data, error, loading, fetchMore, refetch, networkStatus } =
     useGetLaunchesQuery({
       variables,
       notifyOnNetworkStatusChange: true
     })
 
-  const handleLoadMore = () => setLoadMore(true)
+  const handleLoadMore = () => {
+    setLoadMore(true)
+    setPage(page + 1)
+  }
 
   const mergeResult = (
     prev: GetLaunchesQuery,
@@ -50,7 +54,7 @@ const LaunchesList: React.FC<ILaunchesListProps> = ({
   useEffect(() => {
     if (loadMore) {
       fetchMore({
-        variables: { pageSize: 5, after: data?.launches.cursor, isBooked },
+        variables: { limit: 5, page, isBooked },
         // @ts-ignore
         updateQuery: (
           prev: GetLaunchesQuery,
@@ -63,7 +67,7 @@ const LaunchesList: React.FC<ILaunchesListProps> = ({
         }
       })
     }
-  }, [loadMore, data, fetchMore, isBooked])
+  }, [loadMore, data, fetchMore, isBooked, page])
 
   if (error)
     return (

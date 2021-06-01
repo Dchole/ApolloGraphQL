@@ -1,8 +1,7 @@
 # import ./launch-fragment.graphql
 
-query GetLaunches($pageSize: Int, $after: Int, $isBooked: Boolean) {
-  launches(pageSize: $pageSize, after: $after, isBooked: $isBooked) {
-    cursor
+query GetLaunches($limit: Int, $page: Int, $isBooked: Boolean) {
+  launches(limit: $limit, page: $page, isBooked: $isBooked) {
     hasMore
     launches {
       ...LaunchQueryPart

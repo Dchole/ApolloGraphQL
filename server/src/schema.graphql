@@ -27,7 +27,7 @@ type Launch {
   name: String!
   details: String
   patch(size: EPatchSize): String
-  rocket: Rocket!
+  rocket: Rocket
   isBooked: Boolean!
   links: Links!
 }

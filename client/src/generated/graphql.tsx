@@ -38,7 +38,6 @@ export type LaunchPatchArgs = {
 
 export type LaunchConnection = {
   __typename?: 'LaunchConnection';
-  cursor?: Maybe<Scalars['Int']>;
   hasMore: Scalars['Boolean'];
   launches: Array<Launch>;
 };
@@ -89,8 +88,8 @@ export type Query = {
 
 
 export type QueryLaunchesArgs = {
-  pageSize?: Maybe<Scalars['Int']>;
-  after?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
   isBooked?: Maybe<Scalars['Boolean']>;
 };
 
@@ -176,8 +175,8 @@ export type GetLaunchDetailsQuery = (
 );
 
 export type GetLaunchesQueryVariables = Exact<{
-  pageSize?: Maybe<Scalars['Int']>;
-  after?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
   isBooked?: Maybe<Scalars['Boolean']>;
 }>;
 
@@ -186,7 +185,7 @@ export type GetLaunchesQuery = (
   { __typename?: 'Query' }
   & { launches: (
     { __typename?: 'LaunchConnection' }
-    & Pick<LaunchConnection, 'cursor' | 'hasMore'>
+    & Pick<LaunchConnection, 'hasMore'>
     & { launches: Array<(
       { __typename?: 'Launch' }
       & LaunchQueryPartFragment
@@ -386,9 +385,8 @@ export type GetLaunchDetailsQueryHookResult = ReturnType<typeof useGetLaunchDeta
 export type GetLaunchDetailsLazyQueryHookResult = ReturnType<typeof useGetLaunchDetailsLazyQuery>;
 export type GetLaunchDetailsQueryResult = Apollo.QueryResult<GetLaunchDetailsQuery, GetLaunchDetailsQueryVariables>;
 export const GetLaunchesDocument = gql`
-    query GetLaunches($pageSize: Int, $after: Int, $isBooked: Boolean) {
-  launches(pageSize: $pageSize, after: $after, isBooked: $isBooked) {
-    cursor
+    query GetLaunches($limit: Int, $page: Int, $isBooked: Boolean) {
+  launches(limit: $limit, page: $page, isBooked: $isBooked) {
     hasMore
     launches {
       ...LaunchQueryPart
@@ -409,8 +407,8 @@ export const GetLaunchesDocument = gql`
  * @example
  * const { data, loading, error } = useGetLaunchesQuery({
  *   variables: {
- *      pageSize: // value for 'pageSize'
- *      after: // value for 'after'
+ *      limit: // value for 'limit'
+ *      page: // value for 'page'
  *      isBooked: // value for 'isBooked'
  *   },
  * });
@@ -572,9 +570,8 @@ export type LaunchFieldPolicy = {
 	isBooked?: FieldPolicy<any> | FieldReadFunction<any>,
 	links?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type LaunchConnectionKeySpecifier = ('cursor' | 'hasMore' | 'launches' | LaunchConnectionKeySpecifier)[];
+export type LaunchConnectionKeySpecifier = ('hasMore' | 'launches' | LaunchConnectionKeySpecifier)[];
 export type LaunchConnectionFieldPolicy = {
-	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	hasMore?: FieldPolicy<any> | FieldReadFunction<any>,
 	launches?: FieldPolicy<any> | FieldReadFunction<any>
 };

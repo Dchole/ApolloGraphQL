@@ -21,6 +21,11 @@ class LaunchAPI extends RESTDataSource {
       patch: {
         small: launch.links.patch.small,
         large: launch.links.patch.large
+      },
+      rocket: {
+        id: launch.rocket.id,
+        name: launch.rocket.name,
+        type: launch.rocket.type
       }
     }
   }
@@ -42,7 +47,7 @@ class LaunchAPI extends RESTDataSource {
     const { docs }: { docs: IDoc[] } = await this.post("launches/query", {
       query: { name: { $in: launches } },
       options: {
-        select: "-id name",
+        select: "name",
         pagination: false
       }
     })
@@ -64,10 +69,18 @@ class LaunchAPI extends RESTDataSource {
       query: {},
       options: {
         select: "name details links patch",
+        limit,
         offset: (currentPage - 1) * pageLimit,
-        populate: ["payloads"]
+        populate: {
+          path: "rocket",
+          select: {
+            name: 1,
+            type: 1
+          }
+        }
       }
     })
+
     return Array.isArray(docs)
       ? docs.map(launch => this.launchReducer(launch))
       : []
