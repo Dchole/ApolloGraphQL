@@ -30,14 +30,6 @@ class LaunchAPI extends RESTDataSource {
     }
   }
 
-  rocketReducer(rocket: Record<string, any>): Rocket {
-    return {
-      id: rocket.id,
-      name: rocket.name,
-      type: rocket.type
-    }
-  }
-
   async hasMore(launches: string[]) {
     interface IDoc {
       id: string
@@ -89,18 +81,6 @@ class LaunchAPI extends RESTDataSource {
   async getLaunchById(launchId: string) {
     const [launch] = await this.get("launches", { id: launchId })
     return this.launchReducer(launch)
-  }
-
-  async getRockets() {
-    const response = await this.get("rockets")
-    return Array.isArray(response)
-      ? response.map(rocket => this.rocketReducer(rocket))
-      : []
-  }
-
-  async getRocketById(rocketId: string) {
-    const [rocket] = await this.get("rockets", { id: rocketId })
-    return this.rocketReducer(rocket)
   }
 
   getLaunchesByIds(launchIds: string[]) {
