@@ -20,7 +20,7 @@ class UserAPI extends MongoDataSource<IUserSchema, IContext> {
   }
 
   async createUser(userData: IUser) {
-    await this.model.create({ ...userData, bookedTrips: [] })
+    await this.model.create(userData)
   }
 
   async bookTrip(launchId: string) {
