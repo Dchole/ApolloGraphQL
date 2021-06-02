@@ -17,7 +17,11 @@ const useHeaderStyles = makeStyles((theme: Theme) =>
       }
     },
     toolbar: {
-      padding: theme.spacing(0, 1)
+      padding: theme.spacing(0, 1),
+
+      "& .MuiIconButton-root": {
+        marginRight: theme.spacing(1)
+      }
     },
     home: ({ show }: IProps) => ({
       textDecoration: "none",

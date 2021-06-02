@@ -29,7 +29,6 @@ const BookTripButton: React.FC<{ id: string }> = ({ id }) => {
 
   useEffect(() => {
     isBookedData && setBooked(isBookedData.launch.isBooked)
-    console.log(isBookedData?.launch.isBooked)
   }, [isBookedData, isBookedData?.launch.isBooked])
 
   const handleBookTrip = async () => {
