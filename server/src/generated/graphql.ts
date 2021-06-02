@@ -32,7 +32,7 @@ export type Launch = {
   name: Scalars['String'];
   details?: Maybe<Scalars['String']>;
   patch?: Maybe<Scalars['String']>;
-  rocket: Rocket;
+  rocket?: Maybe<Rocket>;
   isBooked: Scalars['Boolean'];
   links: Links;
 };
@@ -282,7 +282,7 @@ export type LaunchResolvers<ContextType = any, ParentType extends ResolversParen
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   details?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   patch?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<LaunchPatchArgs, never>>;
-  rocket?: Resolver<ResolversTypes['Rocket'], ParentType, ContextType>;
+  rocket?: Resolver<Maybe<ResolversTypes['Rocket']>, ParentType, ContextType>;
   isBooked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   links?: Resolver<ResolversTypes['Links'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
