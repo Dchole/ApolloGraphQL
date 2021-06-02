@@ -29,7 +29,8 @@ const UserSchema = new Schema({
   },
   bookedTrips: [
     {
-      type: String
+      type: String,
+      unique: true
     }
   ]
 })

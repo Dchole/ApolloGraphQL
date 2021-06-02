@@ -1,55 +1,55 @@
-import { MongoDataSource } from "apollo-datasource-mongodb";
-import { AuthenticationError } from "apollo-server";
-import { IUser, IUserSchema } from "../models/user-model";
-import { getCurrentUserId } from "../utils";
+import { MongoDataSource } from "apollo-datasource-mongodb"
+import { AuthenticationError } from "apollo-server"
+import { IUser, IUserSchema } from "../models/user-model"
+import { getCurrentUserId } from "../utils"
 
 interface IContext {
-  token: string;
+  token: string
 }
 
 class UserAPI extends MongoDataSource<IUserSchema, IContext> {
   async getLoggedInUser() {
-    if (!this.context.token) throw new AuthenticationError("Unauthenticated");
+    if (!this.context.token) throw new AuthenticationError("Unauthenticated")
 
-    const userId = getCurrentUserId(this.context.token);
-    return await this.findOneById(userId);
+    const userId = getCurrentUserId(this.context.token)
+    return await this.findOneById(userId)
   }
 
   async getUser(email: string) {
-    return await this.model.findOne({ email });
+    return await this.model.findOne({ email })
   }
 
-  async createUser(data: IUser) {
-    await this.model.create(data);
+  async createUser(userData: IUser) {
+    await this.model.create({ ...userData, bookedTrips: [] })
   }
 
   async bookTrip(launchId: string) {
-    const user = await this.getLoggedInUser();
+    const user = await this.getLoggedInUser()
 
-    const bookedTrips = [...(user?.bookedTrips || []), launchId];
-    await user?.updateOne({ bookedTrips });
-    return launchId;
+    const bookedTrips = [...(user?.bookedTrips || []), launchId]
+    await user?.updateOne({ bookedTrips })
+    return launchId
   }
 
   async cancelTrip(launchId: string) {
-    const user = await this.getLoggedInUser();
+    const user = await this.getLoggedInUser()
 
-    const bookedTrips = [...(user?.bookedTrips || [])];
-    const updatedBookedTrips = bookedTrips.filter(trip => trip !== launchId);
+    const bookedTrips = [...(user?.bookedTrips || [])]
+    const updatedBookedTrips = bookedTrips.filter(trip => trip !== launchId)
 
-    await user?.updateOne({ bookedTrips: updatedBookedTrips });
-    return launchId;
+    await user?.updateOne({ bookedTrips: updatedBookedTrips })
+    return launchId
   }
 
   async getLaunchIdsByUser() {
-    const user = await this.getLoggedInUser();
-    return user?.bookedTrips || [];
+    const user = await this.getLoggedInUser()
+    return user?.bookedTrips || []
   }
 
   async isLaunchBooked(launchId: string) {
-    const user = await this.getLoggedInUser();
-    return user?.bookedTrips?.includes(launchId) || false;
+    const user = await this.getLoggedInUser()
+    return user?.bookedTrips?.includes(launchId) || false
   }
 }
 
-export default UserAPI;
+export default UserAPI
