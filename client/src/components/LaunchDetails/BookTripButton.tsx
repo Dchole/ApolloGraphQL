@@ -4,7 +4,8 @@ import BookIcon from "@material-ui/icons/Book"
 import { lazy, useState, Suspense, useEffect } from "react"
 import {
   useBookTripMutation,
-  useCancelTripMutation
+  useCancelTripMutation,
+  useIsLaunchBookedQuery
 } from "../../generated/graphql"
 import useDetailStyles from "../../styles/detail-styles"
 
@@ -13,44 +14,29 @@ const Feedback = lazy(() => import("../Feedback"))
 const BookTripButton: React.FC<{ id: string }> = ({ id }) => {
   const classes = useDetailStyles()
   const [booked, setBooked] = useState(false)
+  const [cancelled, setCancelled] = useState(false)
   const [message, setMessage] = useState("")
-  const [isBookedLoading, setIsBookedLoading] = useState(true)
-  const [bookTrip, { data: bookData, loading: bookLoading }] =
-    useBookTripMutation()
-  const [cancelTrip, { data: cancelData, loading: cancelLoading }] =
-    useCancelTripMutation()
+  const { data: isBookedData, loading: isBookedLoading } =
+    useIsLaunchBookedQuery({
+      variables: { id }
+    })
+  const [bookTrip, { loading: bookLoading }] = useBookTripMutation()
+  const [cancelTrip, { loading: cancelLoading }] = useCancelTripMutation()
 
   const mutationLoading = bookLoading || cancelLoading
 
   const clearMessage = () => setMessage("")
 
   useEffect(() => {
-    ;(async () => {
-      try {
-        const { data } = await fetch("http://localhost:4000", {
-          method: "POST",
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MGIwZmUzOGE3M2MwOTBjOWIxOTZjNTIiLCJpYXQiOjE2MjIzMDU1MjF9.MfWDH1wSaNnXdfKtBjLSTpg_ElpPpjvAYQ1ecfkShOk",
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ query: "{ launch(id: 110) { isBooked } }" })
-        }).then(res => res.json())
-
-        setBooked(data)
-      } catch (err) {
-        console.log(err.message)
-      } finally {
-        setIsBookedLoading(false)
-      }
-    })()
-  }, [])
+    isBookedData && setBooked(isBookedData.launch.isBooked)
+    console.log(isBookedData?.launch.isBooked)
+  }, [isBookedData, isBookedData?.launch.isBooked])
 
   const handleBookTrip = async () => {
     try {
-      await bookTrip({ variables: { launchId: id } })
-      bookData && setBooked(bookData.bookTrip.success)
-      setMessage(`${bookData?.bookTrip.message}`)
+      const { data } = await bookTrip({ variables: { launchId: id } })
+      data && setBooked(data.bookTrip.success)
+      setMessage(`${data?.bookTrip.message}`)
     } catch (err) {
       console.log(err.message)
     }
@@ -58,9 +44,9 @@ const BookTripButton: React.FC<{ id: string }> = ({ id }) => {
 
   const handleCancelTrip = async () => {
     try {
-      await cancelTrip({ variables: { launchId: id } })
-      cancelData && setBooked(cancelData.cancelTrip.success)
-      setMessage(`${cancelData?.cancelTrip.message}`)
+      const { data } = await cancelTrip({ variables: { launchId: id } })
+      data && setCancelled(data.cancelTrip.success)
+      setMessage(`${data?.cancelTrip.message}`)
     } catch (err) {
       console.log(err.message)
     }
@@ -88,11 +74,7 @@ const BookTripButton: React.FC<{ id: string }> = ({ id }) => {
       )}
       <Suspense fallback={<div />}>
         <Feedback
-          severity={
-            bookData?.bookTrip.success || cancelData?.cancelTrip.success
-              ? "success"
-              : "error"
-          }
+          severity={booked || cancelled ? "success" : "error"}
           message={message}
           open={Boolean(message)}
           handleClose={clearMessage}

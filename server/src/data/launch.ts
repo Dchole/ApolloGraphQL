@@ -40,8 +40,6 @@ class LaunchAPI extends RESTDataSource {
       }
     )
 
-    console.log({ docs })
-
     const cursor = launches[launches.length - 1]
 
     const indexOfCursor = docs.findIndex(
