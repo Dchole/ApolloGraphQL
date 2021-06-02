@@ -12,11 +12,11 @@ class UserAPI extends MongoDataSource<IUserSchema, IContext> {
     if (!this.context.token) throw new AuthenticationError("Unauthenticated")
 
     const userId = getCurrentUserId(this.context.token)
-    return await this.findOneById(userId)
+    return this.findOneById(userId)
   }
 
   async getUser(email: string) {
-    return await this.model.findOne({ email })
+    return this.model.findOne({ email })
   }
 
   async createUser(userData: IUser) {
@@ -26,8 +26,13 @@ class UserAPI extends MongoDataSource<IUserSchema, IContext> {
   async bookTrip(launchId: string) {
     const user = await this.getLoggedInUser()
 
-    const bookedTrips = [...(user?.bookedTrips || []), launchId]
-    await user?.updateOne({ bookedTrips })
+    const bookedTrips = [...(user?.bookedTrips || [])]
+    if (bookedTrips.includes(launchId)) {
+      throw new Error("Trip Already booked!")
+    }
+
+    const updatedBookedTrips = [...bookedTrips, launchId]
+    await user?.updateOne({ bookedTrips: updatedBookedTrips })
     return launchId
   }
 

@@ -32,13 +32,15 @@ class LaunchAPI extends RESTDataSource {
     const { docs }: { docs: { id: string }[] } = await this.post(
       "launches/query",
       {
-        query: { _id: { $in: launches } },
+        query: {},
         options: {
           select: "name",
           pagination: false
         }
       }
     )
+
+    console.log({ docs })
 
     const cursor = launches[launches.length - 1]
 
@@ -47,6 +49,18 @@ class LaunchAPI extends RESTDataSource {
     )
 
     return indexOfCursor + 1 < docs.length
+  }
+
+  async getBookedLaunches(bookedLaunchesIds: string[]) {
+    const { docs } = await this.post("launches/query", {
+      query: { _id: { $in: bookedLaunchesIds } },
+      options: {
+        select: "id",
+        pagination: false
+      }
+    })
+
+    return docs
   }
 
   async getAllLaunches(limit?: null | number, page?: null | number) {

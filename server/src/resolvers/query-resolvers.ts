@@ -22,15 +22,14 @@ const Query: QueryResolvers<TContext> = {
       bookedLaunchesIdsPromise
     ])
 
-    const filteredLaunches =
-      isBooked &&
-      allLaunches.filter(launch => bookedLaunchesIds.includes(launch.id))
+    const bookedLaunches = await launchAPI.getLaunchesByIds(bookedLaunchesIds)
 
-    const launches = filteredLaunches || allLaunches
-    const hasMore = await launchAPI.hasMore(launches.map(launch => launch.id))
+    const hasMore = await launchAPI.hasMore(
+      allLaunches.map(launch => launch.id)
+    )
 
     return {
-      launches,
+      launches: isBooked ? bookedLaunches : allLaunches,
       hasMore
     }
   },
