@@ -96,8 +96,9 @@ const LaunchesList: React.FC<ILaunchesListProps> = ({
       disableGutters={onAccountPage}
       className={onAccountPage ? undefined : classes.root}
     >
-      <LoadLaunches loading={loading} />
-      {isBooked && !Boolean(data?.launches.launches.length) ? (
+      {loading ? (
+        <LoadLaunches loading={loading} />
+      ) : isBooked && !Boolean(data?.launches.launches.length) ? (
         <Box mt={20}>
           <Typography
             align="center"
