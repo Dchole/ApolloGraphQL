@@ -1,5 +1,7 @@
 import LaunchesList from "../components/LaunchesList"
 
-const Launches = () => <LaunchesList />
+const Launches = () => {
+  return <LaunchesList />
+}
 
 export default Launches

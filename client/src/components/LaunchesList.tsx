@@ -1,7 +1,9 @@
 import clsx from "clsx"
 import React, { useEffect, useState } from "react"
+import Box from "@material-ui/core/Box"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import Container from "@material-ui/core/Container"
+import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
 import Launch from "../components/Launch"
 import LoadLaunches from "./LoadLaunches"
@@ -95,16 +97,31 @@ const LaunchesList: React.FC<ILaunchesListProps> = ({
       className={onAccountPage ? undefined : classes.root}
     >
       <LoadLaunches loading={loading} />
-      {data?.launches.launches.map(launch => (
-        <Launch
-          key={launch.id}
-          id={launch.id}
-          missionName={launch.name}
-          missionPatch={launch.patch}
-          rocketName={launch.rocket.name}
-        />
-      ))}
-      {data?.launches.hasMore && (
+      {isBooked && !Boolean(data?.launches.launches.length) ? (
+        <Box mt={20}>
+          <Typography
+            align="center"
+            variant="h4"
+            component="p"
+            color="textSecondary"
+          >
+            Empty List <span aria-hidden>:(</span>
+          </Typography>
+        </Box>
+      ) : (
+        <>
+          {data?.launches.launches.map(launch => (
+            <Launch
+              key={launch.id}
+              id={launch.id}
+              missionName={launch.name}
+              missionPatch={launch.patch}
+              rocketName={launch.rocket.name}
+            />
+          ))}
+        </>
+      )}
+      {!isBooked && data?.launches.hasMore && (
         <div className={classes.action}>
           <Button
             variant="contained"
