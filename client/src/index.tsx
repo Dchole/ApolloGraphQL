@@ -11,7 +11,7 @@ import {
   NormalizedCacheObject
 } from "@apollo/client"
 import { setContext } from "@apollo/client/link/context"
-import { ThemeProvider } from "@material-ui/core"
+import { ThemeProvider } from "@material-ui/core/styles"
 import { getAccessToken } from "./token"
 import theme from "./theme"
 import TripContextProvider from "./components/TripContext"
