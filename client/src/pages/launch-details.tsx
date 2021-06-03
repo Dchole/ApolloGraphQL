@@ -49,7 +49,7 @@ const LaunchPage = () => {
           )}
           {data && (
             <div className={classes.buttonWrapper}>
-              <BookTripButton id={id} />
+              <BookTripButton id={id} isBooked={data.launch.isBooked} />
             </div>
           )}
         </Grid>

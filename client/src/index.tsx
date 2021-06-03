@@ -14,6 +14,7 @@ import { setContext } from "@apollo/client/link/context"
 import { ThemeProvider } from "@material-ui/core"
 import { getAccessToken } from "./token"
 import theme from "./theme"
+import TripContextProvider from "./components/TripContext"
 
 const httpLink = createHttpLink({
   uri:
@@ -42,7 +43,9 @@ ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>
-        <App />
+        <TripContextProvider>
+          <App />
+        </TripContextProvider>
       </ThemeProvider>
     </ApolloProvider>
   </React.StrictMode>,
