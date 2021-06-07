@@ -18,7 +18,7 @@ import logo from "../../assets/images/dog-3.png"
 import useHeaderStyles from "../../styles/header-styles"
 import useDesktopView from "../../hooks/useDesktopView"
 import { paths } from "./Navbar"
-import { normalizePathname } from "../../utils"
+import { normalizePathname } from "../../utils/normalize-pathname"
 
 interface IHeaderProps {
   logout: () => void
