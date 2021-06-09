@@ -1,21 +1,21 @@
-import React, { useState } from "react";
-import Box from "@material-ui/core/Box";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import ReplayIcon from "@material-ui/icons/Replay";
-import useErrorStyles from "../styles/error-styles";
-import { ApolloError, ApolloQueryResult, NetworkStatus } from "@apollo/client";
+import React, { useState } from "react"
+import Box from "@material-ui/core/Box"
+import CircularProgress from "@material-ui/core/CircularProgress"
+import Button from "@material-ui/core/Button"
+import Typography from "@material-ui/core/Typography"
+import ReplayIcon from "@material-ui/icons/Replay"
+import useErrorStyles from "../styles/error-styles"
+import { ApolloError, ApolloQueryResult, NetworkStatus } from "@apollo/client"
 
 interface IValues {
-  [key: string]: any;
+  [key: string]: any
 }
 
 interface IErrorProps {
-  refetchVariables?: IValues;
-  refetch: (variables?: IValues) => Promise<ApolloQueryResult<any>>;
-  networkStatus: NetworkStatus;
-  error: ApolloError | undefined;
+  refetchVariables?: IValues
+  refetch: (variables?: IValues) => Promise<ApolloQueryResult<any>>
+  networkStatus: NetworkStatus
+  error: ApolloError | undefined
 }
 
 const Error: React.FC<IErrorProps> = ({
@@ -24,18 +24,18 @@ const Error: React.FC<IErrorProps> = ({
   refetchVariables,
   networkStatus
 }) => {
-  const classes = useErrorStyles();
-  const [refetching, setRefetching] = useState(false);
+  const classes = useErrorStyles()
+  const [refetching, setRefetching] = useState(false)
 
   const handleReload = async () => {
     try {
-      await refetch(refetchVariables);
+      await refetch(refetchVariables)
     } catch (err) {
-      console.error(err.message);
+      console.error(err.message)
     }
-  };
+  }
 
-  if (networkStatus === NetworkStatus.refetch) setRefetching(true);
+  if (networkStatus === NetworkStatus.refetch) setRefetching(true)
 
   return (
     <Box mt={20} component="section" display="grid" className={classes.root}>
@@ -55,7 +55,7 @@ const Error: React.FC<IErrorProps> = ({
         {refetching ? <CircularProgress size={25} /> : "Retry"}
       </Button>
     </Box>
-  );
-};
+  )
+}
 
-export default Error;
+export default Error

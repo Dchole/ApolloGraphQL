@@ -110,9 +110,14 @@ self.addEventListener("fetch", event => {
         }
 
         const networkResponse = await fetchFromNetwork()
-
         return networkResponse
       })()
     )
+  }
+})
+
+self.addEventListener("sync", event => {
+  if (event.tag === "refetch") {
+    console.log("Syncing")
   }
 })

@@ -33,8 +33,9 @@ const Query: QueryResolvers<TContext> = {
       hasMore
     }
   },
-  launch: (_parent, { id }, { dataSources: { launchAPI } }) =>
-    launchAPI.getLaunchById(id)
+  launch: (_parent, { id }, { dataSources: { launchAPI } }) => {
+    return launchAPI.getLaunchById(id)
+  }
 }
 
 export default Query

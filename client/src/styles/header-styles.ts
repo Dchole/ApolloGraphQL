@@ -51,6 +51,15 @@ const useHeaderStyles = makeStyles((theme: Theme) =>
     },
     bookedIcon: {
       margin: "auto"
+    },
+    network: {
+      width: theme.spacing(1.2),
+      height: theme.spacing(1.2),
+      borderRadius: "50%",
+      position: "absolute",
+      top: "40%",
+      right: -28,
+      backgroundColor: theme.palette.error.main
     }
   })
 )

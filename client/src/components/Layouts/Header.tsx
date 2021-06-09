@@ -10,6 +10,7 @@ import Menu from "@material-ui/core/Menu"
 import MenuList from "@material-ui/core/MenuList"
 import MenuItem from "@material-ui/core/MenuItem"
 import ListItemIcon from "@material-ui/core/ListItemIcon"
+import Zoom from "@material-ui/core/Zoom"
 import ArrowBackIcon from "@material-ui/icons/ArrowBack"
 import BookIcon from "@material-ui/icons/Book"
 import PersonIcon from "@material-ui/icons/Person"
@@ -22,9 +23,10 @@ import { normalizePathname } from "../../utils/normalize-pathname"
 
 interface IHeaderProps {
   logout: () => void
+  offline: boolean
 }
 
-const Header: React.FC<IHeaderProps> = ({ logout }) => {
+const Header: React.FC<IHeaderProps> = ({ logout, offline }) => {
   const { goBack, location } = useHistory()
   const [show, setShow] = useState(false)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -60,19 +62,25 @@ const Header: React.FC<IHeaderProps> = ({ logout }) => {
           component={desktopView ? Link : undefined}
           to="/"
           alignItems="center"
+          justify="space-between"
           container
           className={classes.home}
         >
-          <img
-            src={logo}
-            alt="space explorer logo"
-            width="50"
-            height="50"
-            loading="lazy"
-          />
-          <Typography variant="h5" component="span">
-            Space Explorer
-          </Typography>
+          <Grid container alignItems="center">
+            <img
+              src={logo}
+              alt="space explorer logo"
+              width="50"
+              height="50"
+              loading="lazy"
+            />
+            <Typography variant="h5" component="span">
+              Space Explorer
+            </Typography>
+          </Grid>
+          <Zoom in={offline}>
+            <div className={classes.network} title="offline" />
+          </Zoom>
         </Grid>
         {desktopView && (
           <Grid alignItems="center" justify="flex-end" container>

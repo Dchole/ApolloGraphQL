@@ -1,3 +1,5 @@
+import "@fontsource/roboto"
+
 import { BrowserRouter, Route, Switch } from "react-router-dom"
 import CssBaseline from "@material-ui/core/CssBaseline"
 import Layout from "./components/Layouts/Layout"
@@ -5,8 +7,6 @@ import LaunchesList from "./components/LaunchesList"
 import LaunchDetails from "./pages/launch-details"
 import BookedLaunches from "./pages/booked-launches"
 import Account from "./pages/account"
-
-import "@fontsource/roboto"
 
 function App() {
   return (

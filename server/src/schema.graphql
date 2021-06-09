@@ -1,6 +1,7 @@
 type Query {
   launches(limit: Int, page: Int, isBooked: Boolean): LaunchConnection!
   launch(id: ID!): Launch!
+  network: String!
   me: User!
 }
 
