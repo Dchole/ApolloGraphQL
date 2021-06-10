@@ -35,6 +35,10 @@ const BookTripButton: React.FC<IBookTripButtonProps> = ({ id, isBooked }) => {
 
   const handleBookTrip = async () => {
     try {
+      navigator.serviceWorker.ready.then(registration => {
+        return registration.sync.register("BookTrip")
+      })
+
       const { data } = await bookTrip({ variables: { launchId: id } })
       data && setBooked(data.bookTrip.success)
       handleStateChange(true)
@@ -46,6 +50,10 @@ const BookTripButton: React.FC<IBookTripButtonProps> = ({ id, isBooked }) => {
 
   const handleCancelTrip = async () => {
     try {
+      navigator.serviceWorker.ready.then(registration => {
+        return registration.sync.register("CancelTrip")
+      })
+
       const { data } = await cancelTrip({ variables: { launchId: id } })
       data && setCancelled(data.cancelTrip.success)
       handleStateChange(true)

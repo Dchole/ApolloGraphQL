@@ -13,8 +13,12 @@ import { ExpirationPlugin } from "workbox-expiration"
 import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching"
 import { registerRoute } from "workbox-routing"
 import { StaleWhileRevalidate } from "workbox-strategies"
+import { ApolloLink } from "@apollo/client"
+import Action from "./indexeddb/Action"
 import Db from "./indexeddb/create-db"
 import Launch from "./indexeddb/Launches"
+import { IPayload } from "./utils/hash-payload"
+import serializeHeaders from "./utils/serialize-headers"
 
 declare const self: ServiceWorkerGlobalScope
 
@@ -87,19 +91,31 @@ self.addEventListener("activate", event => {
 
 self.addEventListener("fetch", event => {
   if (event.request.url === "https://gql-server-api.herokuapp.com/") {
+    new ApolloLink((operation, forward) => {
+      const context = operation.getContext()
+      console.log({ context })
+      return forward(operation)
+    })
+
     const fetchFromNetwork = async () => {
-      const requestBody = await event.request.clone().json()
-      const networkResponse = await fetch(event.request)
+      const requestBody: IPayload = await event.request.clone().json()
+      const networkResponse = await fetch(event.request.clone())
       const networkData = await networkResponse.clone().json()
 
-      new Launch().saveLaunchConnection(networkData, requestBody)
+      requestBody.query.startsWith("query")
+        ? new Launch().saveLaunchConnection(networkData, requestBody)
+        : new Action().saveMutation(
+            event.request.url,
+            serializeHeaders(event.request.headers),
+            requestBody
+          )
 
       return networkResponse
     }
 
     event.respondWith(
       (async () => {
-        const requestBody = await event.request.clone().json()
+        const requestBody: IPayload = await event.request.clone().json()
         const cache = await new Launch().getLaunchConnection(requestBody)
 
         if (cache) {
@@ -117,7 +133,19 @@ self.addEventListener("fetch", event => {
 })
 
 self.addEventListener("sync", event => {
-  if (event.tag === "refetch") {
-    console.log("Syncing")
-  }
+  event.waitUntil(
+    (async () => {
+      const { url, headers, payload } = await new Action().getMutation(
+        event.tag
+      )
+
+      console.log({ url, headers, payload })
+
+      return fetch(url, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(payload)
+      })
+    })()
+  )
 })

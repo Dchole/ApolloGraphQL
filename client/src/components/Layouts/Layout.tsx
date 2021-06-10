@@ -11,6 +11,7 @@ const Layout: React.FC = ({ children }) => {
   const [show, setShow] = useState(false)
   const [showPin, setShowPin] = useState(false)
   const [message, setMessage] = useState("")
+  const [startShowingBanner, setStartShowingBanner] = useState(false)
   const [severity, setSeverity] = useState<TSeverity>("info")
   const [isAuthenticated, setIsAuthenticated] = useState(
     Boolean(getAccessToken())
@@ -18,16 +19,11 @@ const Layout: React.FC = ({ children }) => {
 
   useEffect(() => {
     const timer = setInterval(async () => {
-      try {
-        const res = await fetch("")
-
-        if (!res.ok) {
-          throw new Error()
-        }
-
+      if (navigator.onLine) {
         setSeverity("success")
         setMessage("Back online")
-      } catch (error) {
+      } else {
+        setStartShowingBanner(true)
         setSeverity("error")
         setMessage("No Connection")
       }
@@ -60,7 +56,7 @@ const Layout: React.FC = ({ children }) => {
     <>
       <Suspense fallback={<div />}>
         <Banner
-          show={show}
+          show={startShowingBanner && show}
           message={message}
           severity={severity}
           handleEnter={handleEnter}

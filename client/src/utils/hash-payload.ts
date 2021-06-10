@@ -1,8 +1,12 @@
 import CryptoJS from "crypto-js"
 
-export type TPayload = Record<string, any>
+export interface IPayload {
+  operationName: string
+  query: string
+  variables: Record<string, any>
+}
 
-const hashPayload = (payload: TPayload) => {
+const hashPayload = (payload: IPayload) => {
   return CryptoJS.MD5(JSON.stringify(payload)).toString()
 }
 
