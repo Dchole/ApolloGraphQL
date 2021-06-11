@@ -11,7 +11,6 @@ import useLaunchesStyles from "../styles/launches-styles"
 import { GetLaunchesQuery, useGetLaunchesQuery } from "../generated/graphql"
 import useDesktopView from "../hooks/useDesktopView"
 import Error from "./Error"
-import { useTripContext } from "./TripContext"
 
 interface ILaunchesListProps {
   isBooked?: boolean
@@ -28,13 +27,11 @@ const LaunchesList: React.FC<ILaunchesListProps> = ({
   const classes = useLaunchesStyles(desktopView)
   const [loadMore, setLoadMore] = useState(false)
   const [page, setPage] = useState(1)
-  const { tripBookedOrCancelled, handleStateChange } = useTripContext()
   const { data, error, loading, fetchMore, refetch, networkStatus } =
     useGetLaunchesQuery({
       variables,
       notifyOnNetworkStatusChange: true,
-      fetchPolicy:
-        isBooked && tripBookedOrCancelled ? "network-only" : "cache-first"
+      fetchPolicy: isBooked ? "network-only" : "cache-first"
     })
 
   const handleLoadMore = () => {
@@ -56,10 +53,6 @@ const LaunchesList: React.FC<ILaunchesListProps> = ({
 
     return mergedData
   }
-
-  useEffect(() => {
-    data?.launches.launches && handleStateChange(false)
-  }, [data, handleStateChange])
 
   useEffect(() => {
     if (loadMore) {

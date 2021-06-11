@@ -12,7 +12,9 @@ class Action extends Db {
     this.collection.add({ url, headers, payload }, payload.operationName)
   }
 
-  async getMutation(operationName: string) {
+  async getMutation(
+    operationName: string
+  ): Promise<{ url: string; headers: Record<string, any>; payload: IPayload }> {
     return this.collection.doc(operationName).get()
   }
 }

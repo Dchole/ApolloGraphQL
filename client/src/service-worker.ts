@@ -139,13 +139,16 @@ self.addEventListener("sync", event => {
         event.tag
       )
 
-      console.log({ url, headers, payload })
-
-      return fetch(url, {
+      const response = await fetch(url, {
         method: "POST",
         headers,
         body: JSON.stringify(payload)
       })
+
+      const data = await response.json()
+      new Launch().saveLaunchConnection(data, payload)
+
+      return response
     })()
   )
 })

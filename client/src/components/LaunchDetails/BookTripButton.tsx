@@ -21,7 +21,6 @@ const BookTripButton: React.FC<IBookTripButtonProps> = ({ id, isBooked }) => {
   const [booked, setBooked] = useState(false)
   const [cancelled, setCancelled] = useState(false)
   const [message, setMessage] = useState("")
-  const { handleStateChange } = useTripContext()
   const [bookTrip, { loading: bookLoading }] = useBookTripMutation()
   const [cancelTrip, { loading: cancelLoading }] = useCancelTripMutation()
 
@@ -40,8 +39,8 @@ const BookTripButton: React.FC<IBookTripButtonProps> = ({ id, isBooked }) => {
       })
 
       const { data } = await bookTrip({ variables: { launchId: id } })
+      console.log(data)
       data && setBooked(data.bookTrip.success)
-      handleStateChange(true)
       setMessage(`${data?.bookTrip.message}`)
     } catch (err) {
       console.log(err.message)
@@ -56,7 +55,6 @@ const BookTripButton: React.FC<IBookTripButtonProps> = ({ id, isBooked }) => {
 
       const { data } = await cancelTrip({ variables: { launchId: id } })
       data && setCancelled(data.cancelTrip.success)
-      handleStateChange(true)
       setMessage(`${data?.cancelTrip.message}`)
     } catch (err) {
       console.log(err.message)
