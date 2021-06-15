@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import Box from "@material-ui/core/Box"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import Button from "@material-ui/core/Button"
@@ -18,7 +18,7 @@ interface IErrorProps {
   error: ApolloError | undefined
 }
 
-const Error: React.FC<IErrorProps> = ({
+const ErrorComponent: React.FC<IErrorProps> = ({
   error,
   refetch,
   refetchVariables,
@@ -26,6 +26,20 @@ const Error: React.FC<IErrorProps> = ({
 }) => {
   const classes = useErrorStyles()
   const [refetching, setRefetching] = useState(false)
+
+  useEffect(() => {
+    const timer = setInterval(async () => {
+      const res = await fetch(".")
+
+      if (!res.ok) {
+        return
+      }
+
+      await refetch(refetchVariables)
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [refetch, refetchVariables])
 
   const handleReload = async () => {
     try {
@@ -58,4 +72,4 @@ const Error: React.FC<IErrorProps> = ({
   )
 }
 
-export default Error
+export default ErrorComponent

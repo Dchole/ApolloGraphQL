@@ -17,20 +17,24 @@ const Layout: React.FC = ({ children }) => {
     Boolean(getAccessToken())
   )
 
+  const handleOnline = () => {
+    setSeverity("success")
+    setMessage("Back online")
+  }
+
+  const handleOffline = () => {
+    setStartShowingBanner(true)
+    setSeverity("error")
+    setMessage("No Connection")
+  }
+
   useEffect(() => {
-    const timer = setInterval(async () => {
-      if (navigator.onLine) {
-        setSeverity("success")
-        setMessage("Back online")
-      } else {
-        setStartShowingBanner(true)
-        setSeverity("error")
-        setMessage("No Connection")
-      }
-    }, 1000)
+    window.addEventListener("online", handleOnline)
+    window.addEventListener("offline", handleOffline)
 
     return () => {
-      clearTimeout(timer)
+      window.removeEventListener("online", handleOnline)
+      window.removeEventListener("offline", handleOffline)
     }
   }, [])
 

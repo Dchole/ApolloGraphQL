@@ -13,7 +13,6 @@ import { ExpirationPlugin } from "workbox-expiration"
 import { precacheAndRoute, createHandlerBoundToURL } from "workbox-precaching"
 import { registerRoute } from "workbox-routing"
 import { StaleWhileRevalidate } from "workbox-strategies"
-import { ApolloLink } from "@apollo/client"
 import Action from "./indexeddb/Action"
 import Db from "./indexeddb/create-db"
 import Launch from "./indexeddb/Launches"
@@ -91,12 +90,6 @@ self.addEventListener("activate", event => {
 
 self.addEventListener("fetch", event => {
   if (event.request.url === "https://gql-server-api.herokuapp.com/") {
-    new ApolloLink((operation, forward) => {
-      const context = operation.getContext()
-      console.log({ context })
-      return forward(operation)
-    })
-
     const fetchFromNetwork = async () => {
       const requestBody: IPayload = await event.request.clone().json()
       const networkResponse = await fetch(event.request.clone())
@@ -118,15 +111,26 @@ self.addEventListener("fetch", event => {
         const requestBody: IPayload = await event.request.clone().json()
         const cache = await new Launch().getLaunchConnection(requestBody)
 
-        if (cache) {
+        try {
+          const requestBody: IPayload = await event.request.clone().json()
+          const networkResponse = await fetch(event.request.clone())
+          const networkData = await networkResponse.clone().json()
+
+          requestBody.query.startsWith("query")
+            ? new Launch().saveLaunchConnection(networkData, requestBody)
+            : new Action().saveMutation(
+                event.request.url,
+                serializeHeaders(event.request.headers),
+                requestBody
+              )
+
+          return networkResponse
+        } catch (error) {
           const cacheResponse = new Response(JSON.stringify(cache))
           fetchFromNetwork()
 
           return cacheResponse
         }
-
-        const networkResponse = await fetchFromNetwork()
-        return networkResponse
       })()
     )
   }

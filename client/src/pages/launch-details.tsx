@@ -16,8 +16,7 @@ const LaunchPage = () => {
   const desktopView = useDesktopView()
 
   const { data, error, refetch, networkStatus } = useGetLaunchDetailsQuery({
-    variables: { id },
-    notifyOnNetworkStatusChange: true
+    variables: { id }
   })
 
   if (error) {
